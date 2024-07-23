@@ -2,9 +2,9 @@
 
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:app_channel/api/api.dart';
-import 'package:app_channel/foundation/app.dart';
+import 'package:app_channel/foundation/app.dart' as app;
+import 'package:app_channel/foundation/app_info.dart';
 import 'package:app_channel/model/model.dart';
 import 'package:dio/dio.dart';
 import 'package:global_repository/global_repository.dart';
@@ -15,9 +15,9 @@ import 'package:global_repository/global_repository.dart';
 abstract class AppChannel {
   int? port;
 
-  Future<List<AppInfo>> getAllAppInfo(bool isSystemApp);
+  Future<List<app.AppInfo>> getAllAppInfo(bool isSystemApp);
 
-  Future<List<AppInfo>> getAppInfos(List<String> packages);
+  Future<List<app.AppInfo>> getAppInfos(List<String> packages);
 
   Future<String> getAppDetails(String package);
 
@@ -117,22 +117,31 @@ class RemoteAppChannel implements AppChannel {
     Log.i('成功获取 LocalAppChannel port -> $port', tag: tag);
     return port;
   }
+  // Future<AppInfos>
 
+  Future<AppInfos> getAppInfosV2() async {
+    AppInfos appInfos = await api.getAllAppInfoV2();
+    return appInfos;
+  }
+
+  @Deprecated('Use getAllAppInfoV2')
   @override
-  Future<List<AppInfo>> getAllAppInfo(bool isSystemApp) async {
+  Future<List<app.AppInfo>> getAllAppInfo(bool isSystemApp) async {
     Stopwatch watch = Stopwatch();
     watch.start();
     // Log.i(port);
+    final result2 = await api.getAllAppInfoV2(isSystemApp: isSystemApp);
+    Log.i('result2 -> $result2');
     final result = await api.getAllAppInfo(isSystemApp: isSystemApp);
     final List<String> infos = (result).split('\n');
     // Log.e('watch -> ${watch.elapsed}');
-    final List<AppInfo> entitys = <AppInfo>[];
+    final List<app.AppInfo> entitys = <app.AppInfo>[];
 
     /// 为了减少数据包大小，自定义了一个简单的协议，没用 json
     for (int i = 0; i < infos.length; i++) {
       List<String> infoList = infos[i].split('\r');
       // Log.d('infoList line$i $infoList');
-      final AppInfo appInfo = AppInfo(
+      final app.AppInfo appInfo = app.AppInfo(
         infoList[0],
         appName: infoList[1],
         minSdk: infoList[2],
@@ -180,7 +189,7 @@ class RemoteAppChannel implements AppChannel {
 
   @override
   Future<void> openApp(String package, String activity, String id) async {
-    Log.i('package -> $package activity -> $activity id -> $id',tag: tag);
+    Log.i('package -> $package activity -> $activity id -> $id', tag: tag);
     Api newApi = Api(Dio(), baseUrl: 'http://127.0.0.1:${port ?? getPort()}');
     await newApi.openAppByPackage(
       package: package,
@@ -195,13 +204,13 @@ class RemoteAppChannel implements AppChannel {
   }
 
   @override
-  Future<List<AppInfo>> getAppInfos(List<String> packages) async {
+  Future<List<app.AppInfo>> getAppInfos(List<String> packages) async {
     String result = await api.getAppInfos(apps: packages);
     final List<String> infos = result.split('\n');
-    final List<AppInfo> entitys = <AppInfo>[];
+    final List<app.AppInfo> entitys = <app.AppInfo>[];
     for (int i = 0; i < infos.length; i++) {
       List<String> infoList = infos[i].split('\r');
-      final AppInfo appInfo = AppInfo(
+      final app.AppInfo appInfo = app.AppInfo(
         infoList[0],
         appName: infoList[1],
         minSdk: infoList[2],
@@ -290,3 +299,14 @@ class RemoteAppChannel implements AppChannel {
     }
   }
 }
+// Future<String> exec(String cmd) async {
+//   String value = '';
+//   final ProcessResult result = await Process.run(
+//     'sh',
+//     ['-c', cmd],
+//     environment: PlatformUtil.envir(),
+//   );
+//   value += result.stdout.toString();
+//   value += result.stderr.toString();
+//   return value.trim();
+// }

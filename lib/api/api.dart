@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:convert';
 
+import 'package:app_channel/foundation/app_info.dart';
 import 'package:app_channel/foundation/protocol.dart';
 import 'package:app_channel/model/model.dart';
 import 'package:dio/dio.dart';
@@ -15,6 +16,13 @@ String deserializedynamic(dynamic data) {
 @RestApi(baseUrl: "", parser: Parser.JsonSerializable)
 abstract class Api {
   factory Api(Dio dio, {String baseUrl}) = _Api;
+
+  /// 获取应用列表
+  @GET('/allappinfo_v2')
+  Future<AppInfos> getAllAppInfoV2({
+    @DioOptions() RequestOptions? options,
+    @Query("is_system_app") bool? isSystemApp,
+  });
 
   /// 获取应用列表
   @GET('/${Protocol.getAllAppInfo}')

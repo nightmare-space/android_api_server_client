@@ -19,6 +19,30 @@ class _Api implements Api {
   String? baseUrl;
 
   @override
+  Future<AppInfos> getAllAppInfoV2({
+    RequestOptions? options,
+    bool? isSystemApp,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'is_system_app': isSystemApp};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _result = await _dio.fetch<Map<String, dynamic>>(newOptions.copyWith(
+      method: 'GET',
+      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      queryParameters: queryParameters,
+      path: '/allappinfo_v2',
+    )..data = _data);
+    final value = AppInfos.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<String> getAllAppInfo({
     RequestOptions? options,
     bool? isSystemApp,

@@ -62,3 +62,5 @@ class AppInfo {
   @override
   int get hashCode => packageName.hashCode;
 }
+
+
