@@ -29,6 +29,11 @@ class Display {
 
   factory Display.fromJson(Map<String, dynamic> json) => _$DisplayFromJson(json);
   Map<String, dynamic> toJson() => _$DisplayToJson(this);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
 }
 
 Displays deserializeDisplays(Map<String, dynamic> json) => Displays.fromJson(json);
@@ -43,4 +48,9 @@ class Displays {
 
   factory Displays.fromJson(Map<String, dynamic> json) => _$DisplaysFromJson(json);
   Map<String, dynamic> toJson() => _$DisplaysToJson(this);
+  
+  @override
+  String toString() {
+    return toJson().toString();
+  }
 }
