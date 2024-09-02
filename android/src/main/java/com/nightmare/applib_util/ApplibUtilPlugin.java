@@ -1,8 +1,10 @@
 package com.nightmare.applib_util;
 
+import android.util.Log;
+
+import com.nightmare.applib.AppServer;
+
 import androidx.annotation.NonNull;
-
-
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
@@ -11,25 +13,22 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 
 
-/** ApplibUtilPlugin */
+/**
+ * ApplibUtilPlugin
+ */
 public class ApplibUtilPlugin implements FlutterPlugin, MethodCallHandler {
-    /// The MethodChannel that will the communication between Flutter and native Android
-    ///
-    /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-    /// when the Flutter Engine is detached from the Activity
-    private MethodChannel channel;
-    int port;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        channel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "apputils");
-//        int port = AppChannel.startServer(flutterPluginBinding.getApplicationContext());
+        Log.d("ApplibUtilPlugin","test");
         try {
-            AppServer.startServerFromActivity(flutterPluginBinding.getApplicationContext());
+            int port = AppServer.startServerFromActivity(flutterPluginBinding.getApplicationContext());
+            Log.d("ApplibUtilPlugin","port -> " + port);
         } catch (Exception e) {
+            Log.d("ApplibUtilPlugin","error -> " + e);
             e.printStackTrace();
         }
-        channel.setMethodCallHandler(this);
+        Log.d("ApplibUtilPlugin","test1");
     }
 
     @Override
@@ -38,6 +37,5 @@ public class ApplibUtilPlugin implements FlutterPlugin, MethodCallHandler {
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        channel.setMethodCallHandler(null);
     }
 }

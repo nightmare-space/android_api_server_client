@@ -1,5 +1,5 @@
-group 'com.nightmare.applib_util'
-version '1.0'
+group = "com.nightmare.app_channel"
+version = "1.0"
 
 buildscript {
     repositories {
@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath("com.android.tools.build:gradle:7.3.0")
     }
 }
 
@@ -20,22 +20,37 @@ rootProject.allprojects {
     }
 }
 
-apply plugin: 'com.android.library'
+apply plugin: "com.android.library"
 
 android {
-    compileSdkVersion 30
+    if (project.android.hasProperty("namespace")) {
+        namespace = "com.nightmare.app_channel"
+    }
+
+    compileSdk = 34
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     defaultConfig {
-        minSdkVersion 16
+        minSdk = 21
     }
-}
 
-dependencies {
-    implementation 'com.github.nightmare-space:applib:v0.0.16'
-    implementation 'org.nanohttpd:nanohttpd:2.3.1'
+    dependencies {
+        testImplementation('junit:junit:4.13.2')
+        implementation 'com.github.nightmare-space:applib:v0.0.21'
+        implementation 'org.nanohttpd:nanohttpd:2.3.1'
+    }
+
+    testOptions {
+        unitTests.all {
+            testLogging {
+               events "passed", "skipped", "failed", "standardOut", "standardError"
+               outputs.upToDateWhen {false}
+               showStandardStreams = true
+            }
+        }
+    }
 }
