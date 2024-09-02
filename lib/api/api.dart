@@ -1,7 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:convert';
 
-import 'package:app_channel/foundation/app_info.dart';
+import 'package:app_channel/model/app_info.dart';
 import 'package:app_channel/foundation/protocol.dart';
 import 'package:app_channel/model/model.dart';
 import 'package:dio/dio.dart';
@@ -18,6 +18,7 @@ abstract class Api {
   factory Api(Dio dio, {String baseUrl}) = _Api;
 
   /// 获取应用列表
+  /// get all app info
   @GET('/allappinfo_v2')
   Future<AppInfos> getAllAppInfoV2({
     @DioOptions() RequestOptions? options,
@@ -25,6 +26,7 @@ abstract class Api {
   });
 
   /// 获取应用列表
+  /// get all app info
   @GET('/${Protocol.getAllAppInfo}')
   Future<String> getAllAppInfo({
     @DioOptions() RequestOptions? options,
@@ -32,6 +34,7 @@ abstract class Api {
   });
 
   /// 获取应用详情
+  /// get app detail
   @GET('/${Protocol.getAppDetail}')
   Future<String> getAppDetail({
     @DioOptions() RequestOptions? options,
@@ -39,6 +42,7 @@ abstract class Api {
   });
 
   /// 通过包名获取 MainActivity
+  /// get main activity by package
   @GET('/${Protocol.getAppMainActivity}')
   Future<Map<String, String>> getAppMainActivity({
     @DioOptions() RequestOptions? options,
@@ -46,6 +50,7 @@ abstract class Api {
   });
 
   /// 通过包名获取 所有的 Activitys
+  /// get all activitys by package
   @GET('/${Protocol.getAppActivity}')
   Future<String> getAppActivity({
     @DioOptions() RequestOptions? options,
@@ -53,6 +58,7 @@ abstract class Api {
   });
 
   /// 通过包名获取所有的 Permission
+  /// get all permissions by package
   @GET('/${Protocol.getAppPermissions}')
   Future<String> getAppPermissions({
     @DioOptions() RequestOptions? options,
@@ -60,6 +66,7 @@ abstract class Api {
   });
 
   /// 启动App
+  /// open app by package
   @GET('/${Protocol.openAppByPackage}')
   Future<String> openAppByPackage({
     @DioOptions() RequestOptions? options,
@@ -69,25 +76,43 @@ abstract class Api {
   });
 
   /// 启动App
+  /// open app by package
   @GET('/${Protocol.getAppInfos}')
   Future<String> getAppInfos({
     @DioOptions() RequestOptions? options,
     @Query("apps") required List<String> apps,
   });
 
+
+  /// 启动App
+  /// open app by package
+  @POST('/cmd')
+  Future<String> execCMD({
+    @DioOptions() RequestOptions? options,
+    @Body() required String cmd,
+  });
+
+
   /// 获得显示器列表
+  /// get displays
   @GET('/displays')
   Future<Displays> displays({
     @DioOptions() RequestOptions? options,
   });
 
   /// 获得显示器列表
+  /// get displays
   @GET('/tasks')
   Future<Tasks> getTasks({
     @DioOptions() RequestOptions? options,
   });
 
   /// 获得显示器列表
+  /// 这个在魅族上回导致卡死
+  /// 因为获得 Surface 的方式不同
+  /// get displays
+  /// This will cause a crash on Meizu
+  /// Because the way to get the Surface is different
   @POST('/createVirtualDisplay')
   Future<Display> createVirtualDisplay({
     @DioOptions() RequestOptions? options,
@@ -96,13 +121,18 @@ abstract class Api {
     @Query("density") required String density,
     @Query("useDeviceConfig") bool? useDeviceConfig,
   });
-}
 
-Api restClient = Api(Dio(BaseOptions(
-  baseUrl: '',
-  contentType: Headers.jsonContentType,
-  validateStatus: (int? status) {
-    return status != null;
-    // return status != null && status >= 200 && status < 300;
-  },
-)));
+
+  /// 这个在魅族上不会闪退
+  /// 但是这个在 Android 12 会有问题
+  /// This will not crash on Meizu
+  /// But this will have a problem on Android 12
+  @POST('/createVirtualDisplayWithSurfaceView')
+  Future<Display> createVirtualDisplayWithSurfaceView({
+    @DioOptions() RequestOptions? options,
+    @Query("width") required String width,
+    @Query("height") required String height,
+    @Query("density") required String density,
+    @Query("useDeviceConfig") bool? useDeviceConfig,
+  });
+}

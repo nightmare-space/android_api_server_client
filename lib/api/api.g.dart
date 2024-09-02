@@ -156,7 +156,7 @@ class _Api implements Api {
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
-      path: '/apppermission',
+      path: '/app_permission',
     )..data = _data);
     final value = _result.data!;
     return value;
@@ -211,6 +211,30 @@ class _Api implements Api {
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
       path: '/appinfos',
+    )..data = _data);
+    final value = _result.data!;
+    return value;
+  }
+
+  @override
+  Future<String> execCMD({
+    RequestOptions? options,
+    required String cmd,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final _data = cmd;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _result = await _dio.fetch<String>(newOptions.copyWith(
+      method: 'POST',
+      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      queryParameters: queryParameters,
+      path: '/cmd',
     )..data = _data);
     final value = _result.data!;
     return value;
@@ -285,6 +309,38 @@ class _Api implements Api {
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
       path: '/createVirtualDisplay',
+    )..data = _data);
+    final value = Display.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<Display> createVirtualDisplayWithSurfaceView({
+    RequestOptions? options,
+    required String width,
+    required String height,
+    required String density,
+    bool? useDeviceConfig,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'width': width,
+      r'height': height,
+      r'density': density,
+      r'useDeviceConfig': useDeviceConfig,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _result = await _dio.fetch<Map<String, dynamic>>(newOptions.copyWith(
+      method: 'POST',
+      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      queryParameters: queryParameters,
+      path: '/createVirtualDisplayWithSurfaceView',
     )..data = _data);
     final value = Display.fromJson(_result.data!);
     return value;
