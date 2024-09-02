@@ -1,2 +1,4 @@
 dependency_overrides:
   signale: 0.0.12
+  global_repository:
+    path: ../../nightmare-space/global_repository

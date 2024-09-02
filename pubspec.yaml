@@ -21,6 +21,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  test: ^1.25.7
   # analyzer: ^6.5.0
   flutter_lints: ^1.0.0
   retrofit_generator: ^8.1.0

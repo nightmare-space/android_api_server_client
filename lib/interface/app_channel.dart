@@ -1,65 +1,16 @@
 // ignore_for_file: avoid_print
 
-import 'dart:convert';
 import 'dart:io';
 import 'package:app_channel/api/api.dart';
 import 'package:app_channel/foundation/app.dart' as app;
-import 'package:app_channel/foundation/app_info.dart';
 import 'package:app_channel/model/model.dart';
 import 'package:dio/dio.dart';
-import 'package:global_repository/global_repository.dart';
+import 'package:global_repository/global_repository_dart.dart';
+import 'package:signale/signale.dart';
 
-/// 在起初的设计中，AppChannel 分为 LocalAppChannel 和 RemoteAppChannel
-/// LocalAppChannel 即 App 运行时，获取安卓相关的信息
-/// RemoteAppChannel 之前主要是 PC 端获取 Android 设备信息，创建虚拟显示器等
-abstract class AppChannel {
-  int? port;
-
-  Future<List<app.AppInfo>> getAllAppInfo(bool isSystemApp);
-
-  Future<List<app.AppInfo>> getAppInfos(List<String> packages);
-
-  Future<String> getAppDetails(String package);
-
-  Future<List<String>> getAppActivitys(String package);
-
-  Future<List<String>> getAppPermission(String package);
-
-  Future<String> getAppMainActivity(String packageName);
-
-  Future<bool> clearAppData(String packageName);
-
-  Future<bool> hideApp(String packageName);
-
-  Future<bool> showApp(String packageName);
-
-  Future<bool> freezeApp(String packageName);
-
-  Future<bool> unFreezeApp(String packageName);
-
-  Future<bool> unInstallApp(String packageName);
-
-  /// 获得文件的大小
-  Future<String> getFileSize(String path);
-
-  Future<void> openApp(String packageName, String activity, String id);
-
-  Future<Tasks> getTasks();
-
-  Future<Displays> getDisplays();
-
-  /// 创建虚拟显示器
-  Future<Display?> createVirtualDisplay(int width, int height, int density, bool? useDeviceConfig);
-
-  @override
-  String toString() {
-    return 'AppChannel{port: $port}';
-  }
-}
-
-class RemoteAppChannel implements AppChannel {
-  RemoteAppChannel({this.port}) {
-    Log.v('RemoteAppChannel Instance port:$port');
+class AppChannel {
+  AppChannel({this.port}) {
+    Log.i('AppChannel new instance port:$port');
     if (Platform.isMacOS || Platform.isLinux || Platform.isWindows) {
       port ??= 0;
     }
@@ -78,66 +29,84 @@ class RemoteAppChannel implements AppChannel {
       followRedirects: true,
     );
     Dio dio = Dio(options);
-    dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) {
-          print(options.extra);
-          print('');
-          Log.v('>>>>>>>>HTTP LOG');
-          Log.v('>>>>>>>>URI: ${options.uri}');
-          Log.v('>>>>>>>>Method: ${options.method}');
-          Log.v('>>>>>>>>Headers: ${options.headers}');
-          JsonEncoder encoder = const JsonEncoder.withIndent('  ');
-          String prettyprint = encoder.convert(options.data);
-          Log.v('>>>>>>>>Body: $prettyprint');
-          Log.v('<<<<<<<<');
-          print('');
-          // log response
-          handler.next(options);
-        },
-      ),
-    );
-    Log.i('RemoteAppChannel api init port:$port');
-    api = Api(dio, baseUrl: 'http://127.0.0.1:${port ?? getPort()}');
+    // dio.interceptors.add(
+    //   InterceptorsWrapper(
+    //     onRequest: (options, handler) {
+    //       print(options.extra);
+    //       print('');
+    //       Log.v('>>>>>>>>HTTP LOG');
+    //       Log.v('>>>>>>>>URI: ${options.uri}');
+    //       Log.v('>>>>>>>>Method: ${options.method}');
+    //       Log.v('>>>>>>>>Headers: ${options.headers}');
+    //       JsonEncoder encoder = const JsonEncoder.withIndent('  ');
+    //       String prettyprint = encoder.convert(options.data);
+    //       Log.v('>>>>>>>>Body: $prettyprint');
+    //       Log.v('<<<<<<<<');
+    //       print('');
+    //       // log response
+    //       handler.next(options);
+    //     },
+    //   ),
+    // );
+    baseUrl = 'http://127.0.0.1:${port ?? (port = getPort())}';
+    Log.i('AppChannel api init port:$port');
+    api = Api(dio, baseUrl: baseUrl);
   }
+  String baseUrl = '';
 
-  String tag = 'RemoteAppChannel';
-  @override
+  String tag = 'AppChannel';
+
   int? port;
 
   late Api api;
 
   int? getPort() {
     if (port != null) {
-      Log.e('port -> $port');
       return port;
     }
     String data = File('${RuntimeEnvir.filesPath}/server_port').readAsStringSync();
-    port = int.tryParse(data);
-    Log.i('成功获取 LocalAppChannel port -> $port', tag: tag);
-    return port;
+    return int.tryParse(data);
   }
-  // Future<AppInfos>
 
-  Future<AppInfos> getAppInfosV2() async {
-    AppInfos appInfos = await api.getAllAppInfoV2();
+  AppInfos userApps = const AppInfos(infos: []);
+  AppInfos systemApps = const AppInfos(infos: []);
+
+  // 起初 App Channel 本身不存储相关数据，只做通信
+  // 但后面发现经常一个 App 中有多个 AppChannel(例如 ADB KIT)
+  // 如果此时再将 Channel 对应设备的软件信息存在别的地方，例如 AppController
+  // 数据就会非常的乱
+  //
+  // At first, the App Channel itself does not store related data, only communication
+  // But later found that there are often multiple AppChannels in an App (such as ADB KIT)
+  // If the software information of the device corresponding to the channel is stored elsewhere at this time, such as AppController
+  // The data will be very messy
+  Future<void> loadUserApps() async {
+    userApps = await getAppInfosV2();
+    userApps.infos.sort(
+      (a, b) => a.appName.toLowerCase().compareTo(b.appName.toLowerCase()),
+    );
+  }
+
+  Future<void> loadSystemApps() async {
+    systemApps = await getAppInfosV2(true);
+    systemApps.infos.sort(
+      (a, b) => a.appName.toLowerCase().compareTo(b.appName.toLowerCase()),
+    );
+  }
+
+  Future<AppInfos> getAppInfosV2([bool? isSystemApp]) async {
+    AppInfos appInfos = await api.getAllAppInfoV2(isSystemApp: isSystemApp);
     return appInfos;
   }
 
   @Deprecated('Use getAllAppInfoV2')
-  @override
   Future<List<app.AppInfo>> getAllAppInfo(bool isSystemApp) async {
     Stopwatch watch = Stopwatch();
     watch.start();
-    // Log.i(port);
-    final result2 = await api.getAllAppInfoV2(isSystemApp: isSystemApp);
-    Log.i('result2 -> $result2');
     final result = await api.getAllAppInfo(isSystemApp: isSystemApp);
     final List<String> infos = (result).split('\n');
     // Log.e('watch -> ${watch.elapsed}');
     final List<app.AppInfo> entitys = <app.AppInfo>[];
-
-    /// 为了减少数据包大小，自定义了一个简单的协议，没用 json
     for (int i = 0; i < infos.length; i++) {
       List<String> infoList = infos[i].split('\r');
       // Log.d('infoList line$i $infoList');
@@ -158,20 +127,16 @@ class RemoteAppChannel implements AppChannel {
     return entitys;
   }
 
-  @override
   Future<String> getAppDetails(String package) async {
     String result = await api.getAppDetail(package: package);
     return result;
   }
 
-  @override
   Future<String> getAppMainActivity(String packageName) async {
     Map<String, dynamic> result = await api.getAppMainActivity(package: packageName);
-    Log.i('getAppMainActivity $result', tag: tag);
     return result['mainActivity'];
   }
 
-  @override
   Future<List<String>> getAppActivitys(String package) async {
     String result = await api.getAppActivity(package: package);
     final List<String> infos = result.split('\n');
@@ -179,7 +144,6 @@ class RemoteAppChannel implements AppChannel {
     return infos;
   }
 
-  @override
   Future<List<String>> getAppPermission(String package) async {
     String result = await api.getAppPermissions(package: package);
     final List<String> infos = result.split('\r');
@@ -187,7 +151,11 @@ class RemoteAppChannel implements AppChannel {
     return infos;
   }
 
-  @override
+  Future<String> execCMD(String cmd) async {
+    String result = await api.execCMD(cmd: cmd);
+    return result.trim();
+  }
+
   Future<void> openApp(String package, String activity, String id) async {
     Log.i('package -> $package activity -> $activity id -> $id', tag: tag);
     Api newApi = Api(Dio(), baseUrl: 'http://127.0.0.1:${port ?? getPort()}');
@@ -203,7 +171,6 @@ class RemoteAppChannel implements AppChannel {
     );
   }
 
-  @override
   Future<List<app.AppInfo>> getAppInfos(List<String> packages) async {
     String result = await api.getAppInfos(apps: packages);
     final List<String> infos = result.split('\n');
@@ -227,37 +194,34 @@ class RemoteAppChannel implements AppChannel {
     return entitys;
   }
 
-  /// 获得DisplayID List
-  @override
   Future<Displays> getDisplays() async {
     return await api.displays();
   }
 
-  @override
+  String iconUrl(String package) {
+    return baseUrl + '/icon?package=$package';
+  }
+
   Future<Tasks> getTasks() async {
     Tasks result = await api.getTasks();
     return result;
   }
 
-  @override
   Future<bool> clearAppData(String packageName) async {
     String result = await exec('pm clear $packageName');
     return result.isNotEmpty;
   }
 
-  @override
   Future<bool> hideApp(String packageName) async {
     String result = await exec('pm hide $packageName');
     return result.isNotEmpty;
   }
 
-  @override
   Future<bool> showApp(String packageName) async {
     String result = await exec('pm unhide $packageName');
     return result.isNotEmpty;
   }
 
-  @override
   Future<bool> freezeApp(String packageName) async {
     Log.i('pm disable $packageName');
     String result = await exec(
@@ -266,24 +230,20 @@ class RemoteAppChannel implements AppChannel {
     return result.isNotEmpty;
   }
 
-  @override
   Future<bool> unFreezeApp(String packageName) async {
     String result = await exec('pm enable --user 0 $packageName');
     return result.isNotEmpty;
   }
 
-  @override
   Future<bool> unInstallApp(String packageName) async {
     String result = await exec('pm uninstall  $packageName');
     return result.isNotEmpty;
   }
 
-  @override
   Future<String> getFileSize(String path) async {
     return await exec('stat -c "%s" $path');
   }
 
-  @override
   Future<Display?> createVirtualDisplay(int width, int height, int density, bool? useDeviceConfig) async {
     try {
       Display display = await api.createVirtualDisplay(
@@ -293,20 +253,33 @@ class RemoteAppChannel implements AppChannel {
         useDeviceConfig: useDeviceConfig,
       );
       return display;
-    } on DioError catch (e) {
+    } on DioException catch (e) {
+      Log.e('createVirtualDisplay Error -> ${e.message} ${e.error} ${e.response}');
+      return null;
+    }
+  }
+
+  Future<Display?> createVirtualDisplayWithSurfaceView({
+    int? width,
+    int? height,
+    int? density,
+    bool? useDeviceConfig,
+  }) async {
+    assert(
+      width != null || height != null || density != null || useDeviceConfig != null,
+      'At least one parameter must be non-null',
+    );
+    try {
+      Display display = await api.createVirtualDisplayWithSurfaceView(
+        width: width.toString(),
+        height: height.toString(),
+        density: density.toString(),
+        useDeviceConfig: useDeviceConfig,
+      );
+      return display;
+    } on DioException catch (e) {
       Log.e('createVirtualDisplay Error -> ${e.message} ${e.error} ${e.response}');
       return null;
     }
   }
 }
-// Future<String> exec(String cmd) async {
-//   String value = '';
-//   final ProcessResult result = await Process.run(
-//     'sh',
-//     ['-c', cmd],
-//     environment: PlatformUtil.envir(),
-//   );
-//   value += result.stdout.toString();
-//   value += result.stderr.toString();
-//   return value.trim();
-// }
