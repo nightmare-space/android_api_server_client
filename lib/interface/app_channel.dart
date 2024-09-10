@@ -156,13 +156,31 @@ class AppChannel {
     return result.trim();
   }
 
-  Future<void> openApp(String package, String activity, String id) async {
+  Future<String> startActivity(String package, String activity, String id) async {
     Log.i('package -> $package activity -> $activity id -> $id', tag: tag);
+    // 这里好像没有返回结果，用同一个dio会有问题
+    // TODO 换成同一个 dio
     Api newApi = Api(Dio(), baseUrl: 'http://127.0.0.1:${port ?? getPort()}');
-    await newApi.openAppByPackage(
+    String result = await newApi.startActivity(
       package: package,
       activity: activity,
       displayId: id,
+      options: RequestOptions(
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      ),
+    );
+    return result;
+  }
+
+  Future<void> stopActivity(String package) async {
+    // Log.i('package -> $package activity -> $activity id -> $id', tag: tag);
+    // 这里好像没有返回结果，用同一个dio会有问题
+    // TODO 换成同一个 dio
+    Api newApi = Api(Dio(), baseUrl: 'http://127.0.0.1:${port ?? getPort()}');
+    await newApi.stopActivity(
+      package: package,
       options: RequestOptions(
         headers: {
           'Content-Type': 'text/plain',

@@ -64,12 +64,20 @@ void main() async {
     await Dio().download(channel.iconUrl(testPackageName), downloadPath);
     await Process.start(
       'bash',
-      ['-c','viu -w 40 -h 20 $downloadPath'],
+      ['-c', 'viu -w 40 -h 20 $downloadPath'],
       mode: ProcessStartMode.inheritStdio,
     );
     expect(headers, isNotNull);
   });
-  
+
+  test('Get Start Activity', () async {
+    await channel.startActivity(
+      testPackageName,
+      testPackageName + '.MainActivity',
+      '0',
+    );
+  });
+
   test('Get Tasks', () async {
     Tasks tasks = await channel.getTasks();
     Log.i('Get tasks -> $tasks');

@@ -193,6 +193,60 @@ class _Api implements Api {
   }
 
   @override
+  Future<String> startActivity({
+    RequestOptions? options,
+    String? package,
+    String? activity,
+    String? displayId,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'package': package,
+      r'activity': activity,
+      r'displayId': displayId,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _result = await _dio.fetch<String>(newOptions.copyWith(
+      method: 'GET',
+      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      queryParameters: queryParameters,
+      path: '/start_activity',
+    )..data = _data);
+    final value = _result.data!;
+    return value;
+  }
+
+  @override
+  Future<String> stopActivity({
+    RequestOptions? options,
+    String? package,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'package': package};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _result = await _dio.fetch<String>(newOptions.copyWith(
+      method: 'GET',
+      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      queryParameters: queryParameters,
+      path: '/stop_activity',
+    )..data = _data);
+    final value = _result.data!;
+    return value;
+  }
+
+  @override
   Future<String> getAppInfos({
     RequestOptions? options,
     required List<String> apps,

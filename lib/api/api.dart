@@ -77,6 +77,25 @@ abstract class Api {
 
   /// 启动App
   /// open app by package
+  @GET('/start_activity')
+  Future<String> startActivity({
+    @DioOptions() RequestOptions? options,
+    @Query("package") String? package,
+    @Query("activity") String? activity,
+    @Query("displayId") String? displayId,
+  });
+
+
+  /// 停止App
+  /// stop app by package
+  @GET('/stop_activity')
+  Future<String> stopActivity({
+    @DioOptions() RequestOptions? options,
+    @Query("package") String? package,
+  });
+
+  /// 启动App
+  /// open app by package
   @GET('/${Protocol.getAppInfos}')
   Future<String> getAppInfos({
     @DioOptions() RequestOptions? options,
