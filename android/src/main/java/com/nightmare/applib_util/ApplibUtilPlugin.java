@@ -20,7 +20,6 @@ public class ApplibUtilPlugin implements FlutterPlugin, MethodCallHandler {
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
-        Log.d("ApplibUtilPlugin","test");
         try {
             int port = AppServer.startServerFromActivity(flutterPluginBinding.getApplicationContext());
             Log.d("ApplibUtilPlugin","port -> " + port);
@@ -28,7 +27,6 @@ public class ApplibUtilPlugin implements FlutterPlugin, MethodCallHandler {
             Log.d("ApplibUtilPlugin","error -> " + e);
             e.printStackTrace();
         }
-        Log.d("ApplibUtilPlugin","test1");
     }
 
     @Override

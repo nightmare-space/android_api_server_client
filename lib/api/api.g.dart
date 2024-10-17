@@ -295,9 +295,12 @@ class _Api implements Api {
   }
 
   @override
-  Future<Displays> displays({RequestOptions? options}) async {
+  Future<Displays> display({
+    RequestOptions? options,
+    required String action,
+  }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'action': action};
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
@@ -309,7 +312,7 @@ class _Api implements Api {
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
-      path: '/displays',
+      path: '/display',
     )..data = _data);
     final value = Displays.fromJson(_result.data!);
     return value;
@@ -362,39 +365,7 @@ class _Api implements Api {
       method: 'POST',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
-      path: '/createVirtualDisplay',
-    )..data = _data);
-    final value = Display.fromJson(_result.data!);
-    return value;
-  }
-
-  @override
-  Future<Display> createVirtualDisplayWithSurfaceView({
-    RequestOptions? options,
-    required String width,
-    required String height,
-    required String density,
-    bool? useDeviceConfig,
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'width': width,
-      r'height': height,
-      r'density': density,
-      r'useDeviceConfig': useDeviceConfig,
-    };
-    queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final newOptions = newRequestOptions(options);
-    newOptions.extra.addAll(_extra);
-    newOptions.headers.addAll(_dio.options.headers);
-    newOptions.headers.addAll(_headers);
-    final _result = await _dio.fetch<Map<String, dynamic>>(newOptions.copyWith(
-      method: 'POST',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
-      queryParameters: queryParameters,
-      path: '/createVirtualDisplayWithSurfaceView',
+      path: '/display?action=createVirtualDisplay',
     )..data = _data);
     final value = Display.fromJson(_result.data!);
     return value;

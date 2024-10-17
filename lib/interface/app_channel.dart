@@ -213,11 +213,11 @@ class AppChannel {
   }
 
   Future<Displays> getDisplays() async {
-    return await api.displays();
+    return await api.display(action: 'getDisplays');
   }
 
   String iconUrl(String package) {
-    return baseUrl + '/icon?package=$package';
+    return '$baseUrl/icon?package=$package';
   }
 
   Future<Tasks> getTasks() async {
@@ -288,7 +288,7 @@ class AppChannel {
       'At least one parameter must be non-null',
     );
     try {
-      Display display = await api.createVirtualDisplayWithSurfaceView(
+      Display display = await api.createVirtualDisplay(
         width: width.toString(),
         height: height.toString(),
         density: density.toString(),

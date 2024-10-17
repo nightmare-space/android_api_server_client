@@ -85,7 +85,6 @@ abstract class Api {
     @Query("displayId") String? displayId,
   });
 
-
   /// 停止App
   /// stop app by package
   @GET('/stop_activity')
@@ -102,7 +101,6 @@ abstract class Api {
     @Query("apps") required List<String> apps,
   });
 
-
   /// 启动App
   /// open app by package
   @POST('/cmd')
@@ -111,12 +109,10 @@ abstract class Api {
     @Body() required String cmd,
   });
 
-
-  /// 获得显示器列表
-  /// get displays
-  @GET('/displays')
-  Future<Displays> displays({
+  @GET('/display')
+  Future<Displays> display({
     @DioOptions() RequestOptions? options,
+    @Query("action") required String action,
   });
 
   /// 获得显示器列表
@@ -126,13 +122,7 @@ abstract class Api {
     @DioOptions() RequestOptions? options,
   });
 
-  /// 获得显示器列表
-  /// 这个在魅族上回导致卡死
-  /// 因为获得 Surface 的方式不同
-  /// get displays
-  /// This will cause a crash on Meizu
-  /// Because the way to get the Surface is different
-  @POST('/createVirtualDisplay')
+  @POST('/display?action=createVirtualDisplay')
   Future<Display> createVirtualDisplay({
     @DioOptions() RequestOptions? options,
     @Query("width") required String width,
@@ -141,17 +131,4 @@ abstract class Api {
     @Query("useDeviceConfig") bool? useDeviceConfig,
   });
 
-
-  /// 这个在魅族上不会闪退
-  /// 但是这个在 Android 12 会有问题
-  /// This will not crash on Meizu
-  /// But this will have a problem on Android 12
-  @POST('/createVirtualDisplayWithSurfaceView')
-  Future<Display> createVirtualDisplayWithSurfaceView({
-    @DioOptions() RequestOptions? options,
-    @Query("width") required String width,
-    @Query("height") required String height,
-    @Query("density") required String density,
-    @Query("useDeviceConfig") bool? useDeviceConfig,
-  });
 }
