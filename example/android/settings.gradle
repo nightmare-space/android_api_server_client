@@ -23,3 +23,7 @@ plugins {
 }
 
 include ":app"
+
+// debug applib with activity context need
+//include ':applib'
+//project(':applib').projectDir = new File('/Users/nightmare/Desktop/nightmare-space/applib')

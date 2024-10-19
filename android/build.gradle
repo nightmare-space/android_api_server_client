@@ -40,8 +40,8 @@ android {
 
     dependencies {
         testImplementation('junit:junit:4.13.2')
-        implementation 'com.github.nightmare-space:applib:v0.0.21'
-        implementation 'org.nanohttpd:nanohttpd:2.3.1'
+        // implementation project(':applib')
+       implementation 'com.github.nightmare-space:applib:v0.0.29'
     }
 
     testOptions {
