@@ -32,5 +32,5 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.nightmare.applib_util
-        pluginClass: ApplibUtilPlugin
+        package: com.nightmare.app_channel
+        pluginClass: AppChannelPlugin
