@@ -1,19 +1,15 @@
 package com.nightmare.app_channel;
 
 import android.util.Log;
-
-import com.nightmare.applib.AppServer;
-
 import androidx.annotation.NonNull;
+
+import com.nightmare.aas_integrated.AASIntegrate;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.embedding.engine.dart.DartExecutor;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
-import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 
@@ -38,8 +34,9 @@ public class AppChannelPlugin implements FlutterPlugin, MethodCallHandler {
             Log.d(TAG, "this engine do not need applib server");
             return;
         }
+        AASIntegrate aasIntegrate = new AASIntegrate();
         try {
-            int port = AppServer.startServerFromActivity(flutterPluginBinding.getApplicationContext());
+            int port = aasIntegrate.startServerFromActivity(flutterPluginBinding.getApplicationContext());
             Log.d(TAG, "port -> " + port);
         } catch (Exception e) {
             Log.d(TAG, "error -> " + e);

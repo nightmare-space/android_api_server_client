@@ -1,4 +1,4 @@
-package com.nightmare.example;
+package com.nightmare.app_channel;
 
 import io.flutter.embedding.android.FlutterActivity;
 

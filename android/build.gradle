@@ -38,19 +38,21 @@ android {
         minSdk = 21
     }
 
-    dependencies {
-        testImplementation('junit:junit:4.13.2')
-        // implementation project(':applib')
-       implementation 'com.github.nightmare-space:applib:v0.0.30'
-    }
-
     testOptions {
         unitTests.all {
             testLogging {
-               events "passed", "skipped", "failed", "standardOut", "standardError"
-               outputs.upToDateWhen {false}
-               showStandardStreams = true
+                events "passed", "skipped", "failed", "standardOut", "standardError"
+                outputs.upToDateWhen { false }
+                showStandardStreams = true
             }
         }
     }
+}
+
+dependencies {
+    testImplementation('junit:junit:4.13.2')
+//    implementation 'com.github.nightmare-space.applib:ass_integrated:v0.1.13'
+    api project(':aas_integrated')
+//    implementation project(':aas_plugins')
+//    implementation project(':aas')
 }

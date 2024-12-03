@@ -1,12 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:convert';
-
-import 'package:app_channel/model/app_info.dart';
-import 'package:app_channel/foundation/protocol.dart';
-import 'package:app_channel/model/model.dart';
+import 'package:android_api_server/model/model.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart' hide Headers;
-part 'api.g.dart';
+part 'aas_api.g.dart';
 
 String deserializedynamic(dynamic data) {
   JsonEncoder encoder = const JsonEncoder.withIndent('  ');
@@ -19,55 +16,47 @@ abstract class Api {
 
   /// 获取应用列表
   /// get all app info
-  @GET('/allappinfo_v2')
-  Future<AppInfos> getAllAppInfoV2({
-    @DioOptions() RequestOptions? options,
-    @Query("is_system_app") bool? isSystemApp,
-  });
-
-  /// 获取应用列表
-  /// get all app info
-  @GET('/${Protocol.getAllAppInfo}')
-  Future<String> getAllAppInfo({
+  @GET('/all_app_info')
+  Future<AppInfos> getAllAppInfo({
     @DioOptions() RequestOptions? options,
     @Query("is_system_app") bool? isSystemApp,
   });
 
   /// 获取应用详情
   /// get app detail
-  @GET('/${Protocol.getAppDetail}')
-  Future<String> getAppDetail({
+  @GET('/app_details')
+  Future<AppDetail> getAppDetail({
     @DioOptions() RequestOptions? options,
     @Query("package") String? package,
   });
 
   /// 通过包名获取 MainActivity
   /// get main activity by package
-  @GET('/${Protocol.getAppMainActivity}')
-  Future<Map<String, String>> getAppMainActivity({
+  @GET('/app_main_activity')
+  Future<AppMainActivity> getAppMainActivity({
     @DioOptions() RequestOptions? options,
     @Query("package") String? package,
   });
 
   /// 通过包名获取 所有的 Activitys
   /// get all activitys by package
-  @GET('/${Protocol.getAppActivity}')
-  Future<String> getAppActivity({
+  @GET('/app_activitys')
+  Future<AppActivitys> getAppActivity({
     @DioOptions() RequestOptions? options,
     @Query("package") String? package,
   });
 
   /// 通过包名获取所有的 Permission
   /// get all permissions by package
-  @GET('/${Protocol.getAppPermissions}')
-  Future<String> getAppPermissions({
+  @GET('/app_permission')
+  Future<AppPermissions> getAppPermissions({
     @DioOptions() RequestOptions? options,
     @Query("package") String? package,
   });
 
   /// 启动App
   /// open app by package
-  @GET('/${Protocol.openAppByPackage}')
+  @GET('/openapp')
   Future<String> openAppByPackage({
     @DioOptions() RequestOptions? options,
     @Query("package") String? package,
@@ -78,7 +67,7 @@ abstract class Api {
   /// 启动App
   /// open app by package
   @GET('/start_activity')
-  Future<String> startActivity({
+  Future<DefaultMap> startActivity({
     @DioOptions() RequestOptions? options,
     @Query("package") String? package,
     @Query("activity") String? activity,
@@ -95,7 +84,7 @@ abstract class Api {
 
   /// 启动App
   /// open app by package
-  @GET('/${Protocol.getAppInfos}')
+  @GET('/appinfos')
   Future<String> getAppInfos({
     @DioOptions() RequestOptions? options,
     @Query("apps") required List<String> apps,
@@ -104,7 +93,7 @@ abstract class Api {
   /// 启动App
   /// open app by package
   @POST('/cmd')
-  Future<String> execCMD({
+  Future<CmdResult> execCMD({
     @DioOptions() RequestOptions? options,
     @Body() required String cmd,
   });
@@ -130,5 +119,4 @@ abstract class Api {
     @Query("density") required String density,
     @Query("useDeviceConfig") bool? useDeviceConfig,
   });
-
 }

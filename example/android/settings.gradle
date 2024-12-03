@@ -24,6 +24,14 @@ plugins {
 
 include ":app"
 
-// debug applib with activity context need
-//include ':applib'
-//project(':applib').projectDir = new File('/Users/nightmare/Desktop/nightmare-space/applib')
+include ':aas'
+project(':aas').projectDir = new File('/Users/nightmare/Desktop/nightmare-space/applib/aas')
+
+include ':aas_plugins'
+project(':aas_plugins').projectDir = new File('/Users/nightmare/Desktop/nightmare-space/applib/aas_plugins')
+
+include ':aas_integrated'
+project(':aas_integrated').projectDir = new File('/Users/nightmare/Desktop/nightmare-space/applib/aas_integrated')
+
+include ':aas_hidden_api'
+project(':aas_hidden_api').projectDir = new File('/Users/nightmare/Desktop/nightmare-space/applib/aas_hidden_api')

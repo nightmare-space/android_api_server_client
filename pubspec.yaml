@@ -1,32 +1,33 @@
-name: app_channel   
+name: android_api_server   
 description: A new flutter plugin project.
 version: 0.0.1
 homepage: https://nightmare.press
 publish_to: 'none'
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=3.3.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   # dio自动生成
-  retrofit: ^4.1.0
+  retrofit: ^4.4.1
   dio: ^5.4.3+1
-  # 序列化json的
-  json_annotation: ^4.8.0
+  json_annotation: ^4.9.0
   signale: ^0.0.12
   global_repository:
     git: https://github.com/nightmare-space/global_repository
+  syntax_highlight: ^0.4.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   test: ^1.25.7
   flutter_lints: ^2.0.0
-  retrofit_generator: ^8.1.0
-  build_runner: ^2.1.11
-  json_serializable: ^6.2.0
+
+  retrofit_generator: '>=8.0.0 <10.0.0' # for Dart 3.3 use ^9.0.0
+  build_runner: ^2.3.3
+  json_serializable: ^6.8.0
 
 flutter:
   plugin:

@@ -1,25 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'api.dart';
+part of 'aas_api.dart';
 
 // **************************************************************************
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
 
 class _Api implements Api {
   _Api(
     this._dio, {
     this.baseUrl,
+    this.errorLogger,
   });
 
   final Dio _dio;
 
   String? baseUrl;
 
+  final ParseErrorLogger? errorLogger;
+
   @override
-  Future<AppInfos> getAllAppInfoV2({
+  Future<AppInfos> getAllAppInfo({
     RequestOptions? options,
     bool? isSystemApp,
   }) async {
@@ -32,42 +35,25 @@ class _Api implements Api {
     newOptions.extra.addAll(_extra);
     newOptions.headers.addAll(_dio.options.headers);
     newOptions.headers.addAll(_headers);
-    final _result = await _dio.fetch<Map<String, dynamic>>(newOptions.copyWith(
+    final _options = newOptions.copyWith(
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
-      path: '/allappinfo_v2',
-    )..data = _data);
-    final value = AppInfos.fromJson(_result.data!);
-    return value;
+      path: '/all_app_info',
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late AppInfos _value;
+    try {
+      _value = AppInfos.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
-  Future<String> getAllAppInfo({
-    RequestOptions? options,
-    bool? isSystemApp,
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'is_system_app': isSystemApp};
-    queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final newOptions = newRequestOptions(options);
-    newOptions.extra.addAll(_extra);
-    newOptions.headers.addAll(_dio.options.headers);
-    newOptions.headers.addAll(_headers);
-    final _result = await _dio.fetch<String>(newOptions.copyWith(
-      method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
-      queryParameters: queryParameters,
-      path: '/allappinfo',
-    )..data = _data);
-    final value = _result.data!;
-    return value;
-  }
-
-  @override
-  Future<String> getAppDetail({
+  Future<AppDetail> getAppDetail({
     RequestOptions? options,
     String? package,
   }) async {
@@ -80,18 +66,25 @@ class _Api implements Api {
     newOptions.extra.addAll(_extra);
     newOptions.headers.addAll(_dio.options.headers);
     newOptions.headers.addAll(_headers);
-    final _result = await _dio.fetch<String>(newOptions.copyWith(
+    final _options = newOptions.copyWith(
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
-      path: '/appdetail',
-    )..data = _data);
-    final value = _result.data!;
-    return value;
+      path: '/app_details',
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late AppDetail _value;
+    try {
+      _value = AppDetail.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
-  Future<Map<String, String>> getAppMainActivity({
+  Future<AppMainActivity> getAppMainActivity({
     RequestOptions? options,
     String? package,
   }) async {
@@ -104,18 +97,25 @@ class _Api implements Api {
     newOptions.extra.addAll(_extra);
     newOptions.headers.addAll(_dio.options.headers);
     newOptions.headers.addAll(_headers);
-    final _result = await _dio.fetch<Map<String, dynamic>>(newOptions.copyWith(
+    final _options = newOptions.copyWith(
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
-      path: '/appmainactivity',
-    )..data = _data);
-    final value = _result.data!.cast<String, String>();
-    return value;
+      path: '/app_main_activity',
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late AppMainActivity _value;
+    try {
+      _value = AppMainActivity.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
-  Future<String> getAppActivity({
+  Future<AppActivitys> getAppActivity({
     RequestOptions? options,
     String? package,
   }) async {
@@ -128,18 +128,25 @@ class _Api implements Api {
     newOptions.extra.addAll(_extra);
     newOptions.headers.addAll(_dio.options.headers);
     newOptions.headers.addAll(_headers);
-    final _result = await _dio.fetch<String>(newOptions.copyWith(
+    final _options = newOptions.copyWith(
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
-      path: '/appactivity',
-    )..data = _data);
-    final value = _result.data!;
-    return value;
+      path: '/app_activitys',
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late AppActivitys _value;
+    try {
+      _value = AppActivitys.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
-  Future<String> getAppPermissions({
+  Future<AppPermissions> getAppPermissions({
     RequestOptions? options,
     String? package,
   }) async {
@@ -152,14 +159,21 @@ class _Api implements Api {
     newOptions.extra.addAll(_extra);
     newOptions.headers.addAll(_dio.options.headers);
     newOptions.headers.addAll(_headers);
-    final _result = await _dio.fetch<String>(newOptions.copyWith(
+    final _options = newOptions.copyWith(
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
       path: '/app_permission',
-    )..data = _data);
-    final value = _result.data!;
-    return value;
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late AppPermissions _value;
+    try {
+      _value = AppPermissions.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
@@ -182,18 +196,25 @@ class _Api implements Api {
     newOptions.extra.addAll(_extra);
     newOptions.headers.addAll(_dio.options.headers);
     newOptions.headers.addAll(_headers);
-    final _result = await _dio.fetch<String>(newOptions.copyWith(
+    final _options = newOptions.copyWith(
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
       path: '/openapp',
-    )..data = _data);
-    final value = _result.data!;
-    return value;
+    )..data = _data;
+    final _result = await _dio.fetch<String>(_options);
+    late String _value;
+    try {
+      _value = _result.data!;
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
-  Future<String> startActivity({
+  Future<DefaultMap> startActivity({
     RequestOptions? options,
     String? package,
     String? activity,
@@ -212,14 +233,21 @@ class _Api implements Api {
     newOptions.extra.addAll(_extra);
     newOptions.headers.addAll(_dio.options.headers);
     newOptions.headers.addAll(_headers);
-    final _result = await _dio.fetch<String>(newOptions.copyWith(
+    final _options = newOptions.copyWith(
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
       path: '/start_activity',
-    )..data = _data);
-    final value = _result.data!;
-    return value;
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late DefaultMap _value;
+    try {
+      _value = DefaultMap.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
@@ -236,14 +264,21 @@ class _Api implements Api {
     newOptions.extra.addAll(_extra);
     newOptions.headers.addAll(_dio.options.headers);
     newOptions.headers.addAll(_headers);
-    final _result = await _dio.fetch<String>(newOptions.copyWith(
+    final _options = newOptions.copyWith(
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
       path: '/stop_activity',
-    )..data = _data);
-    final value = _result.data!;
-    return value;
+    )..data = _data;
+    final _result = await _dio.fetch<String>(_options);
+    late String _value;
+    try {
+      _value = _result.data!;
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
@@ -260,18 +295,25 @@ class _Api implements Api {
     newOptions.extra.addAll(_extra);
     newOptions.headers.addAll(_dio.options.headers);
     newOptions.headers.addAll(_headers);
-    final _result = await _dio.fetch<String>(newOptions.copyWith(
+    final _options = newOptions.copyWith(
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
       path: '/appinfos',
-    )..data = _data);
-    final value = _result.data!;
-    return value;
+    )..data = _data;
+    final _result = await _dio.fetch<String>(_options);
+    late String _value;
+    try {
+      _value = _result.data!;
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
-  Future<String> execCMD({
+  Future<CmdResult> execCMD({
     RequestOptions? options,
     required String cmd,
   }) async {
@@ -284,14 +326,21 @@ class _Api implements Api {
     newOptions.extra.addAll(_extra);
     newOptions.headers.addAll(_dio.options.headers);
     newOptions.headers.addAll(_headers);
-    final _result = await _dio.fetch<String>(newOptions.copyWith(
+    final _options = newOptions.copyWith(
       method: 'POST',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
       path: '/cmd',
-    )..data = _data);
-    final value = _result.data!;
-    return value;
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late CmdResult _value;
+    try {
+      _value = CmdResult.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
@@ -308,14 +357,21 @@ class _Api implements Api {
     newOptions.extra.addAll(_extra);
     newOptions.headers.addAll(_dio.options.headers);
     newOptions.headers.addAll(_headers);
-    final _result = await _dio.fetch<Map<String, dynamic>>(newOptions.copyWith(
+    final _options = newOptions.copyWith(
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
       path: '/display',
-    )..data = _data);
-    final value = Displays.fromJson(_result.data!);
-    return value;
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late Displays _value;
+    try {
+      _value = Displays.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
@@ -329,14 +385,21 @@ class _Api implements Api {
     newOptions.extra.addAll(_extra);
     newOptions.headers.addAll(_dio.options.headers);
     newOptions.headers.addAll(_headers);
-    final _result = await _dio.fetch<Map<String, dynamic>>(newOptions.copyWith(
+    final _options = newOptions.copyWith(
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
       path: '/tasks',
-    )..data = _data);
-    final value = Tasks.fromJson(_result.data!);
-    return value;
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late Tasks _value;
+    try {
+      _value = Tasks.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
   }
 
   @override
@@ -361,14 +424,21 @@ class _Api implements Api {
     newOptions.extra.addAll(_extra);
     newOptions.headers.addAll(_dio.options.headers);
     newOptions.headers.addAll(_headers);
-    final _result = await _dio.fetch<Map<String, dynamic>>(newOptions.copyWith(
+    final _options = newOptions.copyWith(
       method: 'POST',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
       path: '/display?action=createVirtualDisplay',
-    )..data = _data);
-    final value = Display.fromJson(_result.data!);
-    return value;
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late Display _value;
+    try {
+      _value = Display.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
   }
 
   RequestOptions newRequestOptions(Object? options) {
