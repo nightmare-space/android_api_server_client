@@ -1,4 +1,4 @@
-package com.nightmare.app_channel;
+package com.example.android_api_server_client_example;
 
 import io.flutter.embedding.android.FlutterActivity;
 

@@ -1,6 +1,6 @@
-# example
+# android_api_server_client_example
 
-A new Flutter project.
+Demonstrates how to use the android_api_server_client plugin.
 
 ## Getting Started
 

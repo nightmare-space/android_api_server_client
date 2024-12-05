@@ -1,5 +1,5 @@
-name: android_api_server   
-description: A new flutter plugin project.
+name: android_api_server_client
+description: Impl Android API Server Client for Flutter
 version: 0.0.1
 homepage: https://nightmare.press
 publish_to: 'none'
@@ -17,7 +17,6 @@ dependencies:
   signale: ^0.0.12
   global_repository:
     git: https://github.com/nightmare-space/global_repository
-  syntax_highlight: ^0.4.0
 
 dev_dependencies:
   flutter_test:
@@ -33,5 +32,5 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.nightmare.app_channel
-        pluginClass: AppChannelPlugin
+        package: com.nightmare.aas_client
+        pluginClass: AASClient

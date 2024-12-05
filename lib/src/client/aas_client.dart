@@ -1,23 +1,16 @@
 // ignore_for_file: avoid_print
 
+import 'dart:async';
 import 'dart:io';
-import 'package:android_api_server/api/aas_api.dart';
-import 'package:android_api_server/model/app_activitys.dart';
-import 'package:android_api_server/model/app_detail.dart';
-import 'package:android_api_server/model/app_main_activity.dart';
-import 'package:android_api_server/model/app_permission.dart';
-import 'package:android_api_server/model/cmd_result.dart';
-import 'package:android_api_server/model/default_map.dart';
-import 'package:android_api_server/model/model.dart';
+import 'package:android_api_server_client/src/api/aas_api.dart';
+import 'package:android_api_server_client/src/model/model.dart';
 import 'package:dio/dio.dart';
 import 'package:global_repository/global_repository_dart.dart';
 import 'package:signale/signale.dart';
+import 'package:flutter/foundation.dart';
 
-Map<String, Function> apis = {};
-Map<String, Map<Symbol, dynamic>> apiArguments = {};
-
-class AppChannel {
-  AppChannel({this.port}) {
+class AASClient {
+  AASClient({this.port, this.url = 'http://127.0.0.1'}) {
     Log.i('AppChannel new instance port:$port');
     if (Platform.isMacOS || Platform.isLinux || Platform.isWindows) {
       port ??= 0;
@@ -56,58 +49,15 @@ class AppChannel {
     //     },
     //   ),
     // );
-    baseUrl = 'http://127.0.0.1:${port ?? (port = getPort())}';
+    port ??= getPort();
+    baseUrl = '$url:$port';
     Log.i('AppChannel api init port:$port');
     api = Api(dio, baseUrl: baseUrl);
-    apis = {
-      '/all_app_info': getAppInfos,
-      '/app_detail': getAppDetails,
-      '/appactivity': getAppActivitys,
-      '/app_main_activity': getAppMainActivity,
-      '/app_permissions': getAppPermission,
-      '/cmd': execCMD,
-      '/display': getDisplays,
-      '/icon': ({required String package}) {
-        return iconUrl(package);
-      },
-      '/start_activity': startActivity,
-      '/stop_activity': stopActivity,
-      '/tasks': getTasks,
-    };
-    apiArguments = {
-      '/all_app_info': {
-        #isSystemApp: false,
-      },
-      '/app_detail': {
-        #package: 'com.nightmare.android_api_server',
-      },
-      '/appactivity': {
-        #package: 'com.nightmare.android_api_server',
-      },
-      '/app_main_activity': {
-        #package: 'com.nightmare.android_api_server',
-      },
-      '/app_permissions': {
-        #package: 'com.nightmare.android_api_server',
-      },
-      '/cmd': {
-        #cmd: 'ls /data/data/com.nightmare.android_api_server',
-      },
-      '/display': {},
-      '/icon': {
-        #package: 'com.nightmare.android_api_server',
-      },
-      '/start_activity': {
-        #package: 'com.android.settings',
-        #activity: 'com.android.settings.Settings',
-        #id: '0',
-      },
-      '/stop_activity': {
-        #package: 'com.android.settings',
-      },
-      '/tasks': {},
-    };
+    genKey();
   }
+
+  Map<String, Function> apis = {};
+  Map<String, Map<Symbol, dynamic>> apiArguments = {};
 
   String baseUrl = '';
 
@@ -115,12 +65,11 @@ class AppChannel {
 
   int? port;
 
+  String url;
+
   late Api api;
 
   int? getPort() {
-    if (port != null) {
-      return port;
-    }
     String data = File('${RuntimeEnvir.filesPath}/server_port').readAsStringSync();
     return int.tryParse(data);
   }
@@ -138,48 +87,104 @@ class AppChannel {
   // If the software information of the device corresponding to the channel is stored elsewhere at this time, such as AppController
   // The data will be very messy
   Future<void> loadUserApps() async {
-    userApps = await getAppInfos();
+    userApps = await getAllAppInfos();
     userApps.infos.sort(
       (a, b) => a.appName.toLowerCase().compareTo(b.appName.toLowerCase()),
     );
   }
 
   Future<void> loadSystemApps() async {
-    systemApps = await getAppInfos(isSystemApp: true);
+    systemApps = await getAllAppInfos(isSystemApp: true);
     systemApps.infos.sort(
       (a, b) => a.appName.toLowerCase().compareTo(b.appName.toLowerCase()),
     );
   }
 
-  Future<AppInfos> getAppInfos({bool? isSystemApp}) => api.getAllAppInfo(isSystemApp: isSystemApp);
+  String? apiKey;
 
-  Future<AppDetail> getAppDetails({required String package}) => api.getAppDetail(package: package);
+  Completer<void> keyCompleter = Completer<void>();
 
-  Future<AppActivitys> getAppActivitys({required String package}) => api.getAppActivity(package: package);
+  Future<void> genKey() async {
+    apiKey = kDebugMode ? 'aas' : () {}.hashCode.toString();
+    try {
+      await api.setKey(key: apiKey);
+    } on DioException catch (e) {
+      Log.e('genKey Error -> ${e.message} ${e.error} ${e.response}');
+    }
+    keyCompleter.complete();
+  }
 
-  Future<AppMainActivity> getAppMainActivity({required String package}) => api.getAppMainActivity(package: package);
+  Future<void> waitKeyGen() async {
+    await keyCompleter.future;
+  }
 
-  Future<AppPermissions> getAppPermission({required String package}) => api.getAppPermissions(package: package);
+  Future<AppInfos> getAllAppInfos({bool? isSystemApp}) async {
+    await waitKeyGen();
+    return api.getAllAppInfos(key: apiKey, isSystemApp: isSystemApp);
+  }
 
-  Future<CmdResult> execCMD({required String cmd}) => api.execCMD(cmd: cmd);
+  Future<AppDetail> getAppDetails({required String package}) async {
+    await waitKeyGen();
+    return api.getAppDetail(key: apiKey, package: package);
+  }
 
-  Future<Displays> getDisplays() => api.display(action: 'getDisplays');
+  Future<AppActivitys> getAppActivitys({required String package}) async {
+    await waitKeyGen();
+    return api.getAppActivity(key: apiKey, package: package);
+  }
+
+  Future<AppMainActivity> getAppMainActivity({required String package}) async {
+    await waitKeyGen();
+    return api.getAppMainActivity(key: apiKey, package: package);
+  }
+
+  Future<String> getAppMainActivityString(String package) async {
+    await waitKeyGen();
+    return (await api.getAppMainActivity(key: apiKey, package: package)).activity;
+  }
+
+  Future<AppPermissions> getAppPermission({required String package}) async {
+    await waitKeyGen();
+    return api.getAppPermissions(key: apiKey, package: package);
+  }
+
+  Future<Displays> getDisplays() async {
+    await waitKeyGen();
+    return api.display(key: apiKey);
+  }
 
   Future<DefaultMap> startActivity({
     required String package,
     required String activity,
-    String id = '0',
+    int displayId = 0,
   }) async {
-    return api.startActivity(package: package, activity: activity, displayId: id);
+    await waitKeyGen();
+    return api.startActivity(key: apiKey, package: package, activity: activity, displayId: '$displayId');
   }
 
-  Future<void> stopActivity({required String package}) => api.stopActivity(package: package);
+  Future<void> stopActivity({required String package}) async {
+    await waitKeyGen();
+    api.stopActivity(package: package);
+  }
 
   String iconUrl(String package) {
-    return '$baseUrl/icon?package=$package';
+    if (!keyCompleter.isCompleted) {
+      throw 'key not ready';
+    }
+    return '$baseUrl/package_manager?key=$apiKey&action=get_icon&package=$package';
   }
 
-  Future<Tasks> getTasks() => api.getTasks();
+  String taskUrl(int taskId) {
+    if (!keyCompleter.isCompleted) {
+      throw 'key not ready';
+    }
+    return '$baseUrl/task_thumbnail?key=$apiKey&id=$taskId';
+  }
+
+  Future<Tasks> getTasks() async {
+    await waitKeyGen();
+    return api.getTasks(key: apiKey);
+  }
 
   // Future<bool> clearAppData(String packageName) async {
   //   String result = await exec('pm clear $packageName');

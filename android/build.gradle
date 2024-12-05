@@ -1,5 +1,5 @@
-group = "com.nightmare.app_channel"
-version = "1.0"
+group = 'com.nightmare.app_channel'
+version = '1.0'
 
 buildscript {
     repositories {
@@ -8,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:7.3.0")
+        classpath('com.android.tools.build:gradle:8.1.0')
     }
 }
 
@@ -20,11 +20,11 @@ rootProject.allprojects {
     }
 }
 
-apply plugin: "com.android.library"
+apply plugin: 'com.android.library'
 
 android {
-    if (project.android.hasProperty("namespace")) {
-        namespace = "com.nightmare.app_channel"
+    if (project.android.hasProperty('namespace')) {
+        namespace = 'com.nightmare.app_channel'
     }
 
     compileSdk = 34
@@ -38,21 +38,18 @@ android {
         minSdk = 21
     }
 
+    dependencies {
+        // implementation project(':aas_integrated')
+        implementation 'com.github.nightmare-space.android_api_server:aas_integrated:v0.1.27'
+    }
+
     testOptions {
         unitTests.all {
             testLogging {
-                events "passed", "skipped", "failed", "standardOut", "standardError"
+                events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
                 outputs.upToDateWhen { false }
                 showStandardStreams = true
             }
         }
     }
-}
-
-dependencies {
-    testImplementation('junit:junit:4.13.2')
-//    implementation 'com.github.nightmare-space.applib:ass_integrated:v0.1.13'
-    api project(':aas_integrated')
-//    implementation project(':aas_plugins')
-//    implementation project(':aas')
 }

@@ -13,25 +13,28 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
+        maven { url 'https://jitpack.io' }
     }
 }
 
 plugins {
     id "dev.flutter.flutter-plugin-loader" version "1.0.0"
-    id "com.android.application" version "7.3.0" apply false
-    id "org.jetbrains.kotlin.android" version "1.7.10" apply false
+    id "com.android.application" version "8.1.0" apply false
+    id "org.jetbrains.kotlin.android" version "1.8.22" apply false
 }
 
 include ":app"
 
-include ':aas'
-project(':aas').projectDir = new File('/Users/nightmare/Desktop/nightmare-space/applib/aas')
-
-include ':aas_plugins'
-project(':aas_plugins').projectDir = new File('/Users/nightmare/Desktop/nightmare-space/applib/aas_plugins')
-
 include ':aas_integrated'
-project(':aas_integrated').projectDir = new File('/Users/nightmare/Desktop/nightmare-space/applib/aas_integrated')
+project(':aas_integrated').projectDir = file('/Users/nightmare/Desktop/nightmare-space/android_api_server/aas_integrated')
+
+
+include ':aas'
+project(':aas').projectDir = file('/Users/nightmare/Desktop/nightmare-space/android_api_server/aas')
 
 include ':aas_hidden_api'
-project(':aas_hidden_api').projectDir = new File('/Users/nightmare/Desktop/nightmare-space/applib/aas_hidden_api')
+project(':aas_hidden_api').projectDir = file('/Users/nightmare/Desktop/nightmare-space/android_api_server/aas_hidden_api')
+
+include ':aas_plugins'
+project(':aas_plugins').projectDir = file('/Users/nightmare/Desktop/nightmare-space/android_api_server/aas_plugins')
+

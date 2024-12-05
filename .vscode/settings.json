@@ -1,3 +1,5 @@
 {
-    "cmake.sourceDirectory": "/Users/nightmare/Desktop/nightmare-space/app_channel/example/linux"
+    "editor.formatOnSave": true,
+    "dart.lineLength": 200,
+    "cmake.ignoreCMakeListsMissing": true
 }
