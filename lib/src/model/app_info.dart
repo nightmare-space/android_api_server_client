@@ -29,6 +29,8 @@ class AppInfo {
     this.hide = false,
     this.uid = 0,
     this.sourceDir = '',
+    this.isSuspended = false,
+    this.isInstalled = true,
   });
   String package;
   String label;
@@ -41,6 +43,10 @@ class AppInfo {
   bool hide;
   int uid;
   String sourceDir;
+  @JsonKey(name: 'is_suspend')
+  bool isSuspended;
+  @JsonKey(name: 'is_install')
+  bool isInstalled;
 
   factory AppInfo.fromJson(Map<String, dynamic> json) => _$AppInfoFromJson(json);
   Map<String, dynamic> toJson() => _$AppInfoToJson(this);

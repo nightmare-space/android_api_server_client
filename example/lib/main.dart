@@ -159,9 +159,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         if (route == '/start_activity') {
                           return TextButton(
                             onPressed: () async {
-                              final argument = aasClient.apiArguments[entry.key];
-                              DefaultMap defaultMap = await Function.apply(entry.value, null, argument);
-                              Log.i('defaultMap -> $defaultMap');
+                              // final argument = aasClient.apiArguments[entry.key];
+                              // DefaultMap defaultMap = await Function.apply(entry.value, null, argument);
+                              // Log.i('defaultMap -> $defaultMap');
                             },
                             child: const Text('Start Activity'),
                           );
@@ -221,9 +221,9 @@ class _MyHomePageState extends State<MyHomePage> {
                         if (route == '/stop_activity') {
                           return TextButton(
                             onPressed: () async {
-                              final argument = aasClient.apiArguments[entry.key];
-                              DefaultMap defaultMap = await Function.apply(entry.value, null, argument);
-                              Log.i('defaultMap -> $defaultMap');
+                              // final argument = aasClient.apiArguments[entry.key];
+                              // DefaultMap defaultMap = await Function.apply(entry.value, null, argument);
+                              // Log.i('defaultMap -> $defaultMap');
                             },
                             child: const Text('Stop Activity'),
                           );

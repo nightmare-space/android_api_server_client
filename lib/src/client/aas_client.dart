@@ -3,15 +3,16 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:android_api_server_client/src/api/aas_api.dart';
+import 'package:android_api_server_client/src/model/app_flags.dart';
 import 'package:android_api_server_client/src/model/model.dart';
+import 'package:android_api_server_client/src/model/pm_result.dart';
 import 'package:dio/dio.dart';
 import 'package:global_repository/global_repository_dart.dart';
 import 'package:signale/signale.dart';
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 
 class AASClient {
   AASClient({this.port, this.url = 'http://127.0.0.1'}) {
-    Log.i('AppChannel new instance port:$port');
     if (Platform.isMacOS || Platform.isLinux || Platform.isWindows) {
       port ??= 0;
     }
@@ -51,7 +52,7 @@ class AASClient {
     // );
     port ??= getPort();
     baseUrl = '$url:$port';
-    Log.i('AppChannel api init port:$port');
+    Log.i('AASClient init port:$port');
     api = Api(dio, baseUrl: baseUrl);
     genKey();
   }
@@ -61,7 +62,7 @@ class AASClient {
 
   String baseUrl = '';
 
-  String tag = 'AppChannel';
+  String tag = '$AASClient';
 
   int? port;
 
@@ -104,8 +105,12 @@ class AASClient {
 
   Completer<void> keyCompleter = Completer<void>();
 
+  bool get release => const bool.fromEnvironment('dart.vm.product');
+
   Future<void> genKey() async {
-    apiKey = kDebugMode ? 'aas' : () {}.hashCode.toString();
+    // TODO 储存上一次的key
+    apiKey = !release ? 'aas' : () {}.hashCode.toString();
+    apiKey = 'aas';
     try {
       await api.setKey(key: apiKey);
     } on DioException catch (e) {
@@ -119,52 +124,63 @@ class AASClient {
   }
 
   Future<AppInfos> getAllAppInfos({bool? isSystemApp}) async {
-    await waitKeyGen();
     return api.getAllAppInfos(key: apiKey, isSystemApp: isSystemApp);
   }
 
   Future<AppDetail> getAppDetails({required String package}) async {
-    await waitKeyGen();
     return api.getAppDetail(key: apiKey, package: package);
   }
 
   Future<AppActivitys> getAppActivitys({required String package}) async {
-    await waitKeyGen();
     return api.getAppActivity(key: apiKey, package: package);
   }
 
   Future<AppMainActivity> getAppMainActivity({required String package}) async {
-    await waitKeyGen();
     return api.getAppMainActivity(key: apiKey, package: package);
   }
 
   Future<String> getAppMainActivityString(String package) async {
-    await waitKeyGen();
     return (await api.getAppMainActivity(key: apiKey, package: package)).activity;
   }
 
   Future<AppPermissions> getAppPermission({required String package}) async {
-    await waitKeyGen();
     return api.getAppPermissions(key: apiKey, package: package);
   }
 
   Future<Displays> getDisplays() async {
-    await waitKeyGen();
     return api.display(key: apiKey);
   }
 
-  Future<DefaultMap> startActivity({
+  Future<DefaultResult> startActivity({
     required String package,
     required String activity,
     int displayId = 0,
   }) async {
-    await waitKeyGen();
     return api.startActivity(key: apiKey, package: package, activity: activity, displayId: '$displayId');
   }
 
+  Future<AppFlags> getAppFlags({
+    required String package,
+    bool? private,
+  }) async {
+    return api.getAppFlags(key: apiKey, package: package, private: private);
+  }
+
   Future<void> stopActivity({required String package}) async {
-    await waitKeyGen();
-    api.stopActivity(package: package);
+    api.stopActivity(key: apiKey, package: package);
+  }
+
+  Future<PMResult> execPMCommand(String command) async {
+    return api.execPMCommand(key: apiKey, cmd: command);
+  }
+
+  /// file url
+  /// {{base}}/file?action=file&path=/sdcard/test.sh&key={{key}}
+  String fileUrl(String path) {
+    if (!keyCompleter.isCompleted) {
+      throw 'key not ready';
+    }
+    return '$baseUrl/file?action=file&path=$path&key=$apiKey';
   }
 
   String iconUrl(String package) {
@@ -178,11 +194,10 @@ class AASClient {
     if (!keyCompleter.isCompleted) {
       throw 'key not ready';
     }
-    return '$baseUrl/task_thumbnail?key=$apiKey&id=$taskId';
+    return '$baseUrl/activity_task_manager?action=get_task_snapshot&key=$apiKey&id=$taskId';
   }
 
   Future<Tasks> getTasks() async {
-    await waitKeyGen();
     return api.getTasks(key: apiKey);
   }
 
@@ -224,8 +239,10 @@ class AASClient {
   // }
 
   Future<Display?> createVirtualDisplay(int width, int height, int density, bool? useDeviceConfig) async {
+    await waitKeyGen();
     try {
       Display display = await api.createVirtualDisplay(
+        key: apiKey,
         width: width.toString(),
         height: height.toString(),
         density: density.toString(),
@@ -244,12 +261,14 @@ class AASClient {
     int? density,
     bool? useDeviceConfig,
   }) async {
+    await waitKeyGen();
     assert(
       width != null || height != null || density != null || useDeviceConfig != null,
       'At least one parameter must be non-null',
     );
     try {
       Display display = await api.createVirtualDisplay(
+        key: apiKey,
         width: width.toString(),
         height: height.toString(),
         density: density.toString(),

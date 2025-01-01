@@ -1,6 +1,6 @@
 name: android_api_server_client_example
 description: "Demonstrates how to use the android_api_server_client plugin."
-publish_to: 'none'
+publish_to: "none"
 
 environment:
   sdk: ^3.5.4
@@ -22,9 +22,7 @@ dev_dependencies:
   flutter_lints: ^4.0.0
 
 flutter:
-
   uses-material-design: true
-
 
 dependency_overrides:
   permission_handler: ^11.3.1

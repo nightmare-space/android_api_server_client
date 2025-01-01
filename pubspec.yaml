@@ -2,7 +2,7 @@ name: android_api_server_client
 description: Impl Android API Server Client for Flutter
 version: 0.0.1
 homepage: https://nightmare.press
-publish_to: 'none'
+publish_to: "none"
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -14,6 +14,7 @@ dependencies:
   retrofit: ^4.4.1
   dio: ^5.4.3+1
   json_annotation: ^4.9.0
+  crypto: ^3.0.1
   signale: ^0.0.12
   global_repository:
     git: https://github.com/nightmare-space/global_repository
@@ -24,7 +25,7 @@ dev_dependencies:
   test: ^1.25.7
   flutter_lints: ^2.0.0
 
-  retrofit_generator: '>=8.0.0 <10.0.0' # for Dart 3.3 use ^9.0.0
+  retrofit_generator: ">=8.0.0 <10.0.0" # for Dart 3.3 use ^9.0.0
   build_runner: ^2.3.3
   json_serializable: ^6.8.0
 

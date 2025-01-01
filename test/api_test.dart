@@ -1,86 +1,100 @@
 import 'dart:io';
 
-import 'package:app_channel/interface/app_channel.dart';
-import 'package:app_channel/model/model.dart';
+import 'package:android_api_server_client/src/client/aas_client.dart';
+import 'package:android_api_server_client/src/model/model.dart';
 import 'package:dio/dio.dart';
 import 'package:test/test.dart';
 import 'package:signale/signale.dart';
 
 void main() async {
   int port = 15000;
-  AppChannel channel = AppChannel(port: port);
+  AASClient client = AASClient(port: port);
   String testPackageName = 'com.nightmare.speedshare';
 
-  test('Get App Infos', () async {
-    AppInfos infos = await channel.getAppInfosV2();
-    AppInfos logInfo = AppInfos(infos: infos.infos.take(3).toList());
-    Log.i('Get App Infos -> $logInfo');
+  await client.waitKeyGen();
+  test('Get App Activitys', () async {
+    AppActivitys activitys = await client.getAppActivitys(package: testPackageName);
+    Log.i('activitys -> $activitys');
+    expect(activitys, isNotNull);
+  });
+
+  test('Get App Flags', () async {
+    AppFlags flags = await client.getAppFlags(package: testPackageName);
+    Log.i('flags -> $flags');
+    expect(flags, isNotNull);
+  });
+
+  test('Get App Details', () async {
+    AppDetail detail = await client.getAppDetails(package: testPackageName);
+    Log.i('detail -> $detail');
+    expect(detail, isNotNull);
+  });
+
+  test('Get Apps Info', () async {
+    AppInfos infos = await client.getAllAppInfos(isSystemApp: false);
+    Log.i('infos -> ${infos.infos.first}');
     expect(infos, isNotNull);
   });
 
-  test('Get App Detail', () async {
-    String detail = await channel.getAppDetails(testPackageName);
-    Log.i('Get App Detail -> $detail');
-    expect(detail, isNotNull);
-  });
-
   test('Get App Main Activity', () async {
-    String detail = await channel.getAppMainActivity(testPackageName);
-    Log.i('Get App Main Activity -> $detail');
-    expect(detail, isNotNull);
+    AppMainActivity infos = await client.getAppMainActivity(package: testPackageName);
+    Log.i('infos -> $infos');
+    expect(infos, isNotNull);
   });
 
-  test('Get App Permission Content', () async {
-    List<String> permissions = await channel.getAppPermission(testPackageName);
-    Log.i('Get App Permission Content -> $permissions');
+  test('Get App Permission', () async {
+    AppPermissions permissions = await client.getAppPermission(package: testPackageName);
+    Log.i('permissions -> ${permissions.datas.first}');
     expect(permissions, isNotNull);
   });
 
-  test('Execute CMD', () async {
-    String result = await channel.execCMD('pwd');
-    Log.i('Execute CMD -> $result');
-    expect(result, isNotNull);
-  });
-
-  test('Create Virtual Display With SurfaceView', () async {
-    Display? display = await channel.createVirtualDisplayWithSurfaceView(
-      useDeviceConfig: true,
-    );
-    Log.i('Create Virtual Display With SurfaceView -> $display');
-    expect(display, isNotNull);
-  });
-
-  test('Get Displays', () async {
-    Displays displays = await channel.getDisplays();
-    Log.i('Get Displays -> $displays');
-    expect(displays, isNotNull);
-  });
-
   test('Get App Icon', () async {
-    String downloadPath = Directory.current.path + '/test.png';
+    String downloadPath = '${Directory.current.path}/test.png';
     // get header first
-    Response response = await Dio().head(channel.iconUrl(testPackageName));
+    Response response = await Dio().head(client.iconUrl(testPackageName));
     Headers headers = response.headers;
-    await Dio().download(channel.iconUrl(testPackageName), downloadPath);
+    await Dio().download(client.iconUrl(testPackageName), downloadPath);
     await Process.start(
       'bash',
       ['-c', 'viu -w 40 -h 20 $downloadPath'],
       mode: ProcessStartMode.inheritStdio,
     );
+    File file = File(downloadPath);
+    file.deleteSync();
     expect(headers, isNotNull);
   });
 
-  test('Get Start Activity', () async {
-    await channel.startActivity(
-      testPackageName,
-      testPackageName + '.MainActivity',
-      '0',
-    );
+  test('Get Displays', () async {
+    Displays displays = await client.getDisplays();
+    Log.i('displays -> ${displays.datas.first}');
+    expect(displays, isNotNull);
   });
 
-  test('Get Tasks', () async {
-    Tasks tasks = await channel.getTasks();
-    Log.i('Get tasks -> $tasks');
-    expect(tasks, isNotNull);
+  test('Get CPU GPU', () async {
+    CPUGPUInfo infos = await client.api.cpu_gpu_info(key: 'aas');
+    Log.i('Get CPU GPU -> $infos');
+    expect(infos, isNotNull);
   });
+
+  // test('Create Virtual Display With SurfaceView', () async {
+  //   Display? display = await channel.createVirtualDisplayWithSurfaceView(
+  //     useDeviceConfig: true,
+  //   );
+  //   Log.i('Create Virtual Display With SurfaceView -> $display');
+  //   expect(display, isNotNull);
+  // });
+
+  // test('Get Start Activity', () async {
+  //   await channel.startActivity(
+  //     testPackageName,
+  //     testPackageName + '.MainActivity',
+  //     '0',
+  //   );
+  // });
+
+  // test('Get Tasks', () async {
+  //   Tasks tasks = await channel.getTasks();
+  //   Log.i('Get tasks -> $tasks');
+  //   expect(tasks, isNotNull);
+  // });
 }

@@ -1,9 +1,14 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:convert';
+import 'package:android_api_server_client/src/model/app_flags.dart';
+import 'package:android_api_server_client/src/model/cpu_gpu_info.dart';
 import 'package:android_api_server_client/src/model/model.dart';
+import 'package:android_api_server_client/src/model/pm_result.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart' hide Headers;
 part 'aas_api.g.dart';
+
+const String _packageManager = '/package_manager';
 
 @RestApi(baseUrl: "", parser: Parser.JsonSerializable)
 abstract class Api {
@@ -15,7 +20,7 @@ abstract class Api {
     @Header("key") String? key,
   });
 
-  @GET('/activity_manager')
+  @GET(_packageManager)
   Future<AppInfos> getAllAppInfos({
     @DioOptions() RequestOptions? options,
     @Header("key") String? key,
@@ -25,17 +30,17 @@ abstract class Api {
 
   /// 获取应用详情
   /// get app detail
-  @GET('/activity_manager')
+  @GET('/package_manager')
   Future<AppDetail> getAppDetail({
     @DioOptions() RequestOptions? options,
     @Header("key") String? key,
-    @Query("action") String action = 'get_app_detail',
+    @Query("action") String action = 'get_app_details',
     @Query("package") String? package,
   });
 
   /// 通过包名获取 MainActivity
   /// get main activity by package
-  @GET('/activity_manager')
+  @GET(_packageManager)
   Future<AppMainActivity> getAppMainActivity({
     @DioOptions() RequestOptions? options,
     @Header("key") String? key,
@@ -45,7 +50,7 @@ abstract class Api {
 
   /// 通过包名获取 所有的 Activitys
   /// get all activitys by package
-  @GET('/activity_manager')
+  @GET(_packageManager)
   Future<AppActivitys> getAppActivity({
     @DioOptions() RequestOptions? options,
     @Header("key") String? key,
@@ -56,7 +61,7 @@ abstract class Api {
   /// 启动App
   /// open app by package
   @GET('/activity_manager')
-  Future<DefaultMap> startActivity({
+  Future<DefaultResult> startActivity({
     @DioOptions() RequestOptions? options,
     @Header("key") String? key,
     @Query("action") String action = 'start_activity',
@@ -65,11 +70,18 @@ abstract class Api {
     @Query("displayId") String? displayId,
   });
 
-  @GET('/activity_manager')
+  @GET('/activity_task_manager')
   Future<Tasks> getTasks({
     @DioOptions() RequestOptions? options,
     @Header("key") String? key,
     @Query("action") String action = 'get_tasks',
+  });
+
+  @GET('/activity_task_manager')
+  Future<AndroidProcesses> getAndroidProcess({
+    @DioOptions() RequestOptions? options,
+    @Header("key") String? key,
+    @Query("action") String action = 'get_running_apps',
   });
 
   /// 通过包名获取所有的 Permission
@@ -82,13 +94,35 @@ abstract class Api {
     @Query("package") String? package,
   });
 
+  /// 通过包名获取所有的 Permission
+  /// get all permissions by package
+  @GET('/package_manager')
+  Future<PMResult> execPMCommand({
+    @DioOptions() RequestOptions? options,
+    @Header("key") String? key,
+    @Query("action") String action = 'pm_cmd',
+    @Query("cmd") String? cmd,
+  });
+
+  /// 通过包名获取所有的 Permission
+  /// get all permissions by package
+  @GET('/package_manager')
+  Future<AppFlags> getAppFlags({
+    @DioOptions() RequestOptions? options,
+    @Header("key") String? key,
+    @Query("action") String action = 'get_app_flags',
+    @Query("private") bool? private,
+    @Query("package") String? package,
+  });
+
   /// 停止App
   /// stop app by package
-  @GET('/stop_activity')
+  @GET('/activity_manager')
   Future<String> stopActivity({
     @DioOptions() RequestOptions? options,
     @Header("key") String? key,
     @Query("package") String? package,
+    @Query("action") String action = "stop_activity",
   });
 
   @GET('/display_manager')
@@ -98,7 +132,7 @@ abstract class Api {
     @Query("action") String action = "getDisplays",
   });
 
-  @POST('/display?action=createVirtualDisplay')
+  @POST('/display_manager?action=createVirtualDisplay')
   Future<Display> createVirtualDisplay({
     @DioOptions() RequestOptions? options,
     @Header("key") String? key,
@@ -106,5 +140,21 @@ abstract class Api {
     @Query("height") required String height,
     @Query("density") required String density,
     @Query("useDeviceConfig") bool? useDeviceConfig,
+  });
+
+  @GET('/device_info')
+  Future<CPUGPUInfo> cpu_gpu_info({
+    @DioOptions() RequestOptions? options,
+    @Header("key") String? key,
+    @Query("action") String action = "cpu_gpu_info",
+  });
+
+  // {{base}}/device_info?action=proc_stat&key={{key}}
+
+  @GET('/device_info')
+  Future<String> getProcStat({
+    @DioOptions() RequestOptions? options,
+    @Header("key") String? key,
+    @Query("action") String action = "proc_stat",
   });
 }

@@ -77,7 +77,7 @@ class _Api implements Api {
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
-      path: '/activity_manager',
+      path: '/package_manager',
     )..data = _data;
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late AppInfos _value;
@@ -94,7 +94,7 @@ class _Api implements Api {
   Future<AppDetail> getAppDetail({
     RequestOptions? options,
     String? key,
-    String action = 'get_app_detail',
+    String action = 'get_app_details',
     String? package,
   }) async {
     final _extra = <String, dynamic>{};
@@ -114,7 +114,7 @@ class _Api implements Api {
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
-      path: '/activity_manager',
+      path: '/package_manager',
     )..data = _data;
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late AppDetail _value;
@@ -151,7 +151,7 @@ class _Api implements Api {
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
-      path: '/activity_manager',
+      path: '/package_manager',
     )..data = _data;
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late AppMainActivity _value;
@@ -188,7 +188,7 @@ class _Api implements Api {
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
-      path: '/activity_manager',
+      path: '/package_manager',
     )..data = _data;
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late AppActivitys _value;
@@ -202,7 +202,7 @@ class _Api implements Api {
   }
 
   @override
-  Future<DefaultMap> startActivity({
+  Future<DefaultResult> startActivity({
     RequestOptions? options,
     String? key,
     String action = 'start_activity',
@@ -232,9 +232,9 @@ class _Api implements Api {
       path: '/activity_manager',
     )..data = _data;
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late DefaultMap _value;
+    late DefaultResult _value;
     try {
-      _value = DefaultMap.fromJson(_result.data!);
+      _value = DefaultResult.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -262,12 +262,45 @@ class _Api implements Api {
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
-      path: '/activity_manager',
+      path: '/activity_task_manager',
     )..data = _data;
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late Tasks _value;
     try {
       _value = Tasks.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<AndroidProcesses> getAndroidProcess({
+    RequestOptions? options,
+    String? key,
+    String action = 'get_running_apps',
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'action': action};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'key': key};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _options = newOptions.copyWith(
+      method: 'GET',
+      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      queryParameters: queryParameters,
+      path: '/activity_task_manager',
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late AndroidProcesses _value;
+    try {
+      _value = AndroidProcesses.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -313,13 +346,17 @@ class _Api implements Api {
   }
 
   @override
-  Future<String> stopActivity({
+  Future<PMResult> execPMCommand({
     RequestOptions? options,
     String? key,
-    String? package,
+    String action = 'pm_cmd',
+    String? cmd,
   }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'package': package};
+    final queryParameters = <String, dynamic>{
+      r'action': action,
+      r'cmd': cmd,
+    };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{r'key': key};
     _headers.removeWhere((k, v) => v == null);
@@ -332,7 +369,83 @@ class _Api implements Api {
       method: 'GET',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
-      path: '/stop_activity',
+      path: '/package_manager',
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late PMResult _value;
+    try {
+      _value = PMResult.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<AppFlags> getAppFlags({
+    RequestOptions? options,
+    String? key,
+    String action = 'get_app_flags',
+    bool? private,
+    String? package,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'action': action,
+      r'private': private,
+      r'package': package,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'key': key};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _options = newOptions.copyWith(
+      method: 'GET',
+      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      queryParameters: queryParameters,
+      path: '/package_manager',
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late AppFlags _value;
+    try {
+      _value = AppFlags.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<String> stopActivity({
+    RequestOptions? options,
+    String? key,
+    String? package,
+    String action = "stop_activity",
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'package': package,
+      r'action': action,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'key': key};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _options = newOptions.copyWith(
+      method: 'GET',
+      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      queryParameters: queryParameters,
+      path: '/activity_manager',
     )..data = _data;
     final _result = await _dio.fetch<String>(_options);
     late String _value;
@@ -406,12 +519,78 @@ class _Api implements Api {
       method: 'POST',
       baseUrl: baseUrl ?? _dio.options.baseUrl,
       queryParameters: queryParameters,
-      path: '/display?action=createVirtualDisplay',
+      path: '/display_manager?action=createVirtualDisplay',
     )..data = _data;
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late Display _value;
     try {
       _value = Display.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<CPUGPUInfo> cpu_gpu_info({
+    RequestOptions? options,
+    String? key,
+    String action = "cpu_gpu_info",
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'action': action};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'key': key};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _options = newOptions.copyWith(
+      method: 'GET',
+      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      queryParameters: queryParameters,
+      path: '/device_info',
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late CPUGPUInfo _value;
+    try {
+      _value = CPUGPUInfo.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<String> getProcStat({
+    RequestOptions? options,
+    String? key,
+    String action = "proc_stat",
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'action': action};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'key': key};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _options = newOptions.copyWith(
+      method: 'GET',
+      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      queryParameters: queryParameters,
+      path: '/device_info',
+    )..data = _data;
+    final _result = await _dio.fetch<String>(_options);
+    late String _value;
+    try {
+      _value = _result.data!;
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
