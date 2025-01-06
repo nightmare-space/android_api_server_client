@@ -42,8 +42,8 @@ extension AASExt on AASClient {
       '/stop_activity': () {
         return stopActivity(package: 'com.android.settings');
       },
-      '/tasks': getTasks,
-      '/tasks_thumbnail': () {},
+      // '/tasks': getTasks,
+      // '/tasks_thumbnail': () {},
     };
   }
 }

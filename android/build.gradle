@@ -40,7 +40,7 @@ android {
 
     dependencies {
         // implementation project(':aas_integrated')
-        implementation 'com.github.nightmare-space.android_api_server:aas_integrated:v0.1.27'
+        implementation 'com.github.nightmare-space.android_api_server:aas_integrated:v0.1.28'
     }
 
     testOptions {
