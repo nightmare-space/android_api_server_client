@@ -30,7 +30,7 @@ abstract class Api {
 
   /// 获取应用详情
   /// get app detail
-  @GET('/package_manager')
+  @GET(_packageManager)
   Future<AppDetail> getAppDetail({
     @DioOptions() RequestOptions? options,
     @Header("key") String? key,
@@ -58,6 +58,37 @@ abstract class Api {
     @Query("package") String? package,
   });
 
+  /// 通过包名获取所有的 Permission
+  /// get all permissions by package
+  @GET(_packageManager)
+  Future<AppPermissions> getAppPermissions({
+    @DioOptions() RequestOptions? options,
+    @Header("key") String? key,
+    @Query("action") String action = 'get_permissions',
+    @Query("package") String? package,
+  });
+
+  /// 执行 pm 命令
+  /// exec pm command
+  @GET(_packageManager)
+  Future<PMResult> execPMCommand({
+    @DioOptions() RequestOptions? options,
+    @Header("key") String? key,
+    @Query("action") String action = 'pm_cmd',
+    @Query("cmd") String? cmd,
+  });
+
+  /// 通过包名获取所有的 Flag
+  /// get all flags by package
+  @GET(_packageManager)
+  Future<AppFlags> getAppFlags({
+    @DioOptions() RequestOptions? options,
+    @Header("key") String? key,
+    @Query("action") String action = 'get_app_flags',
+    @Query("private") bool? private,
+    @Query("package") String? package,
+  });
+
   /// 启动App
   /// open app by package
   @GET('/activity_manager')
@@ -82,37 +113,6 @@ abstract class Api {
     @DioOptions() RequestOptions? options,
     @Header("key") String? key,
     @Query("action") String action = 'get_running_apps',
-  });
-
-  /// 通过包名获取所有的 Permission
-  /// get all permissions by package
-  @GET('/package_manager')
-  Future<AppPermissions> getAppPermissions({
-    @DioOptions() RequestOptions? options,
-    @Header("key") String? key,
-    @Query("action") String action = 'get_permissions',
-    @Query("package") String? package,
-  });
-
-  /// 通过包名获取所有的 Permission
-  /// get all permissions by package
-  @GET('/package_manager')
-  Future<PMResult> execPMCommand({
-    @DioOptions() RequestOptions? options,
-    @Header("key") String? key,
-    @Query("action") String action = 'pm_cmd',
-    @Query("cmd") String? cmd,
-  });
-
-  /// 通过包名获取所有的 Permission
-  /// get all permissions by package
-  @GET('/package_manager')
-  Future<AppFlags> getAppFlags({
-    @DioOptions() RequestOptions? options,
-    @Header("key") String? key,
-    @Query("action") String action = 'get_app_flags',
-    @Query("private") bool? private,
-    @Query("package") String? package,
   });
 
   /// 停止App
