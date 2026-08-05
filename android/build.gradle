@@ -40,6 +40,7 @@ android {
 
     dependencies {
         // implementation project(':aas_integrated')
+        // TODO: publish new version
         implementation 'com.github.nightmare-space.android_api_server:aas_integrated:v0.1.28'
     }
 

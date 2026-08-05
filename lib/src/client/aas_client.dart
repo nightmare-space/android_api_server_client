@@ -11,6 +11,10 @@ import 'package:global_repository/global_repository_dart.dart';
 import 'package:signale/signale.dart';
 
 // import 'package:flutter/foundation.dart';
+// ignore: non_constant_identifier_names
+final DefaultAas = AASClient();
+
+// import 'package:flutter/foundation.dart';
 typedef AASClient = Aas;
 
 class Aas {
@@ -191,19 +195,28 @@ class Aas {
     return '$baseUrl/file?action=file&path=$path&key=$apiKey';
   }
 
-  String iconUrl(String package) {
+  String apkIconUrl({String? package, String? path}) {
     if (!keyCompleter.isCompleted) {
       throw 'key not ready';
+    }
+    if (path != null) {
+      return '$baseUrl/package_manager?key=$apiKey&action=get_icon&path=$path';
     }
     return '$baseUrl/package_manager?key=$apiKey&action=get_icon&package=$package';
   }
 
-  String taskUrl(int taskId) {
+  @Deprecated('use apkIconUrl instead')
+  String iconUrl(String package) => apkIconUrl(package: package);
+
+  String taskSnapshotUrl(int taskId) {
     if (!keyCompleter.isCompleted) {
       throw 'key not ready';
     }
     return '$baseUrl/activity_task_manager?action=get_task_snapshot&key=$apiKey&id=$taskId';
   }
+
+  @Deprecated('use taskSnapshotUrl instead')
+  String taskUrl(int taskId) => taskSnapshotUrl(taskId);
 
   Future<Tasks> getTasks() async {
     return api.getTasks(key: apiKey);
