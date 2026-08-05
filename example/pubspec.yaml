@@ -26,3 +26,4 @@ flutter:
 
 dependency_overrides:
   permission_handler: ^11.3.1
+  intl: 0.20.2
