@@ -12,20 +12,22 @@ class Display {
     required this.width,
     required this.height,
     required this.rotation,
-    required this.dump,
     required this.id,
-    this.refreshRate,
-    this.metrics,
+    required this.refreshRate,
+    required this.densityDpi,
+    required this.density,
+    required this.uniqueId,
   });
 
-  int rotation;
   int id;
+  String uniqueId;
   String name;
   int width;
   int height;
+  int rotation;
   double? refreshRate;
-  String? metrics;
-  String dump;
+  double densityDpi;
+  double density;
 
   factory Display.fromJson(Map<String, dynamic> json) => _$DisplayFromJson(json);
   Map<String, dynamic> toJson() => _$DisplayToJson(this);
@@ -48,7 +50,7 @@ class Displays {
 
   factory Displays.fromJson(Map<String, dynamic> json) => _$DisplaysFromJson(json);
   Map<String, dynamic> toJson() => _$DisplaysToJson(this);
-  
+
   @override
   String toString() {
     return toJson().toString();

@@ -1,6 +1,6 @@
 import 'package:android_api_server_client/android_api_server_client.dart';
 
-extension AASExt on AASClient {
+extension AASExt on Aas {
   void initSymbol() {
     String currentPackage = 'com.example.android_api_server_client_example';
     apis = {

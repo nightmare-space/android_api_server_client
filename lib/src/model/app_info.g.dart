@@ -29,6 +29,7 @@ AppInfo _$AppInfoFromJson(Map<String, dynamic> json) => AppInfo(
       sourceDir: json['sourceDir'] as String? ?? '',
       isSuspended: json['is_suspend'] as bool? ?? false,
       isInstalled: json['is_install'] as bool? ?? true,
+      userId: (json['userId'] as num?)?.toInt() ?? 0,
     );
 
 Map<String, dynamic> _$AppInfoToJson(AppInfo instance) => <String, dynamic>{
@@ -41,6 +42,7 @@ Map<String, dynamic> _$AppInfoToJson(AppInfo instance) => <String, dynamic>{
       'enabled': instance.enabled,
       'hide': instance.hide,
       'uid': instance.uid,
+      'userId': instance.userId,
       'sourceDir': instance.sourceDir,
       'is_suspend': instance.isSuspended,
       'is_install': instance.isInstalled,

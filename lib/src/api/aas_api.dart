@@ -9,16 +9,11 @@ import 'package:retrofit/retrofit.dart' hide Headers;
 part 'aas_api.g.dart';
 
 const String _packageManager = '/package_manager';
+const String _activityTaskManager = '/activity_task_manager';
 
 @RestApi(baseUrl: "", parser: Parser.JsonSerializable)
 abstract class Api {
   factory Api(Dio dio, {String baseUrl}) = _Api;
-
-  @GET('/key')
-  Future<String> setKey({
-    @DioOptions() RequestOptions? options,
-    @Header("key") String? key,
-  });
 
   @GET(_packageManager)
   Future<AppInfos> getAllAppInfos({
@@ -99,20 +94,7 @@ abstract class Api {
     @Query("package") String? package,
     @Query("activity") String? activity,
     @Query("displayId") String? displayId,
-  });
-
-  @GET('/activity_task_manager')
-  Future<Tasks> getTasks({
-    @DioOptions() RequestOptions? options,
-    @Header("key") String? key,
-    @Query("action") String action = 'get_tasks',
-  });
-
-  @GET('/activity_task_manager')
-  Future<AndroidProcesses> getAndroidProcess({
-    @DioOptions() RequestOptions? options,
-    @Header("key") String? key,
-    @Query("action") String action = 'get_running_apps',
+    @Query("userId") int? userId,
   });
 
   /// 停止App
@@ -123,6 +105,38 @@ abstract class Api {
     @Header("key") String? key,
     @Query("package") String? package,
     @Query("action") String action = "stop_activity",
+  });
+
+  @GET(_activityTaskManager)
+  Future<Tasks> getTasks({
+    @DioOptions() RequestOptions? options,
+    @Header("key") String? key,
+    @Query("action") String action = 'get_tasks',
+  });
+
+  @GET(_activityTaskManager)
+  Future<AndroidProcesses> getAndroidProcess({
+    @DioOptions() RequestOptions? options,
+    @Header("key") String? key,
+    @Query("action") String action = 'get_running_apps',
+  });
+
+  @GET(_activityTaskManager)
+  Future<DefaultResult> setFocusedTask({
+    @DioOptions() RequestOptions? options,
+    @Header("key") String? key,
+    @Query("action") String action = 'set_focused_task',
+    @Query("id") required int id,
+  });
+
+  /// 停止App
+  /// stop app by package
+  @GET('/activity_manager')
+  Future<DefaultResult> removeTask({
+    @DioOptions() RequestOptions? options,
+    @Query("id") required int id,
+    @Header("key") required String key,
+    @Query("action") String action = "remove_task",
   });
 
   @GET('/display_manager')
@@ -140,6 +154,8 @@ abstract class Api {
     @Query("height") required String height,
     @Query("density") required String density,
     @Query("useDeviceConfig") bool? useDeviceConfig,
+    // displayName
+    @Query("displayName") String? displayName,
   });
 
   @GET('/device_info')
@@ -156,5 +172,23 @@ abstract class Api {
     @DioOptions() RequestOptions? options,
     @Header("key") String? key,
     @Query("action") String action = "proc_stat",
+  });
+
+  // {{base}}/input_manager?action=get_input_devices
+  @GET('/input_manager')
+  Future<InputDevices> getInputDevices({
+    @DioOptions() RequestOptions? options,
+    @Header("key") String? key,
+    @Query("action") String action = "get_input_devices",
+  });
+
+  // {{base}}/input_manager?action=bind_device_to_display&descriptor=542f6cdee76a9e2201822037a98805831dc97520&display=local:21
+  @GET('/input_manager')
+  Future<DefaultResult> bindDeviceToDisplay({
+    @DioOptions() RequestOptions? options,
+    @Header("key") String? key,
+    @Query("action") String action = "bind_device_to_display",
+    @Query("descriptor") required String descriptor,
+    @Query("display") required String display,
   });
 }

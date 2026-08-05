@@ -10,3 +10,4 @@ export 'default_map.dart';
 export 'app_flags.dart';
 export 'process.dart';
 export 'cpu_gpu_info.dart';
+export 'input_devices.dart';

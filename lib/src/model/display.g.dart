@@ -11,21 +11,23 @@ Display _$DisplayFromJson(Map<String, dynamic> json) => Display(
       width: (json['width'] as num).toInt(),
       height: (json['height'] as num).toInt(),
       rotation: (json['rotation'] as num).toInt(),
-      dump: json['dump'] as String,
       id: (json['id'] as num).toInt(),
       refreshRate: (json['refreshRate'] as num?)?.toDouble(),
-      metrics: json['metrics'] as String?,
+      densityDpi: (json['densityDpi'] as num).toDouble(),
+      density: (json['density'] as num).toDouble(),
+      uniqueId: json['uniqueId'] as String,
     );
 
 Map<String, dynamic> _$DisplayToJson(Display instance) => <String, dynamic>{
-      'rotation': instance.rotation,
       'id': instance.id,
+      'uniqueId': instance.uniqueId,
       'name': instance.name,
       'width': instance.width,
       'height': instance.height,
+      'rotation': instance.rotation,
       'refreshRate': instance.refreshRate,
-      'metrics': instance.metrics,
-      'dump': instance.dump,
+      'densityDpi': instance.densityDpi,
+      'density': instance.density,
     };
 
 Displays _$DisplaysFromJson(Map<String, dynamic> json) => Displays(

@@ -52,7 +52,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  AASClient aasClient = AASClient(port: Platform.isMacOS ? 15000 : null);
+  Aas aasClient = Aas(port: Platform.isMacOS ? 15000 : null);
   // AASClient aasClient = AASClient(port: 15000);
   Highlighter? highlighter;
   bool ready = false;

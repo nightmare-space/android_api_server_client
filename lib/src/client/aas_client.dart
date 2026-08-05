@@ -9,10 +9,12 @@ import 'package:android_api_server_client/src/model/pm_result.dart';
 import 'package:dio/dio.dart';
 import 'package:global_repository/global_repository_dart.dart';
 import 'package:signale/signale.dart';
-// import 'package:flutter/foundation.dart';
 
-class AASClient {
-  AASClient({this.port, this.url = 'http://127.0.0.1'}) {
+// import 'package:flutter/foundation.dart';
+typedef AASClient = Aas;
+
+class Aas {
+  Aas({this.port, this.url = 'http://127.0.0.1'}) {
     if (Platform.isMacOS || Platform.isLinux || Platform.isWindows) {
       port ??= 0;
     }
@@ -62,7 +64,7 @@ class AASClient {
 
   String baseUrl = '';
 
-  String tag = '$AASClient';
+  String tag = '$Aas';
 
   int? port;
 
@@ -111,11 +113,6 @@ class AASClient {
     // TODO 储存上一次的key
     apiKey = !release ? 'aas' : () {}.hashCode.toString();
     apiKey = 'aas';
-    try {
-      await api.setKey(key: apiKey);
-    } on DioException catch (e) {
-      Log.e('genKey Error -> ${e.message} ${e.error} ${e.response}');
-    }
     keyCompleter.complete();
   }
 
@@ -155,8 +152,23 @@ class AASClient {
     required String package,
     required String activity,
     int displayId = 0,
+    int userId = 0,
   }) async {
-    return api.startActivity(key: apiKey, package: package, activity: activity, displayId: '$displayId');
+    return api.startActivity(
+      key: apiKey,
+      package: package,
+      activity: activity,
+      displayId: '$displayId',
+      userId: userId,
+    );
+  }
+
+  Future<void> stopActivity({required String package}) async {
+    api.stopActivity(key: apiKey, package: package);
+  }
+
+  Future<DefaultResult> removeTask({required int id}) async {
+    return await api.removeTask(key: apiKey!, id: id);
   }
 
   Future<AppFlags> getAppFlags({
@@ -164,10 +176,6 @@ class AASClient {
     bool? private,
   }) async {
     return api.getAppFlags(key: apiKey, package: package, private: private);
-  }
-
-  Future<void> stopActivity({required String package}) async {
-    api.stopActivity(key: apiKey, package: package);
   }
 
   Future<PMResult> execPMCommand(String command) async {
@@ -199,6 +207,10 @@ class AASClient {
 
   Future<Tasks> getTasks() async {
     return api.getTasks(key: apiKey);
+  }
+
+  Future<DefaultResult> setFocusedTask(int id) async {
+    return api.setFocusedTask(key: apiKey, id: id);
   }
 
   // Future<bool> clearAppData(String packageName) async {
@@ -238,8 +250,17 @@ class AASClient {
   //   return await exec('stat -c "%s" $path');
   // }
 
-  Future<Display?> createVirtualDisplay(int width, int height, int density, bool? useDeviceConfig) async {
-    await waitKeyGen();
+  Future<Display?> createVirtualDisplay({
+    int? width,
+    int? height,
+    int? density,
+    bool? useDeviceConfig,
+    String? name = 'aas-vd',
+  }) async {
+    assert(
+      width != null || height != null || density != null || useDeviceConfig != null,
+      'At least one parameter must be non-null',
+    );
     try {
       Display display = await api.createVirtualDisplay(
         key: apiKey,
@@ -247,6 +268,7 @@ class AASClient {
         height: height.toString(),
         density: density.toString(),
         useDeviceConfig: useDeviceConfig,
+        displayName: name,
       );
       return display;
     } on DioException catch (e) {
@@ -260,8 +282,8 @@ class AASClient {
     int? height,
     int? density,
     bool? useDeviceConfig,
+    String? name = 'aas-vd',
   }) async {
-    await waitKeyGen();
     assert(
       width != null || height != null || density != null || useDeviceConfig != null,
       'At least one parameter must be non-null',
@@ -273,11 +295,29 @@ class AASClient {
         height: height.toString(),
         density: density.toString(),
         useDeviceConfig: useDeviceConfig,
+        displayName: name,
       );
       return display;
     } on DioException catch (e) {
       Log.e('createVirtualDisplay Error -> ${e.message} ${e.error} ${e.response}');
       return null;
     }
+  }
+
+  Future<InputDevices> getInputDevices() async {
+    return api.getInputDevices(key: apiKey);
+  }
+
+  Future<DefaultResult> bindDeviceToDisplay({
+    String action = "bind_device_to_display",
+    required String descriptor,
+    required String display,
+  }) {
+    return api.bindDeviceToDisplay(
+      key: apiKey,
+      action: action,
+      descriptor: descriptor,
+      display: display,
+    );
   }
 }

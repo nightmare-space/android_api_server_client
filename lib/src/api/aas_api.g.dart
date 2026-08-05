@@ -2,56 +2,22 @@
 
 part of 'aas_api.dart';
 
+// dart format off
+
 // **************************************************************************
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter,avoid_unused_constructor_parameters,unreachable_from_main
 
 class _Api implements Api {
-  _Api(
-    this._dio, {
-    this.baseUrl,
-    this.errorLogger,
-  });
+  _Api(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
 
   String? baseUrl;
 
   final ParseErrorLogger? errorLogger;
-
-  @override
-  Future<String> setKey({
-    RequestOptions? options,
-    String? key,
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'key': key};
-    _headers.removeWhere((k, v) => v == null);
-    const Map<String, dynamic>? _data = null;
-    final newOptions = newRequestOptions(options);
-    newOptions.extra.addAll(_extra);
-    newOptions.headers.addAll(_dio.options.headers);
-    newOptions.headers.addAll(_headers);
-    final _options = newOptions.copyWith(
-      method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
-      queryParameters: queryParameters,
-      path: '/key',
-    )..data = _data;
-    final _result = await _dio.fetch<String>(_options);
-    late String _value;
-    try {
-      _value = _result.data!;
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
 
   @override
   Future<AppInfos> getAllAppInfos({
@@ -75,7 +41,7 @@ class _Api implements Api {
     newOptions.headers.addAll(_headers);
     final _options = newOptions.copyWith(
       method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
       queryParameters: queryParameters,
       path: '/package_manager',
     )..data = _data;
@@ -84,7 +50,7 @@ class _Api implements Api {
     try {
       _value = AppInfos.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, _result);
       rethrow;
     }
     return _value;
@@ -112,7 +78,7 @@ class _Api implements Api {
     newOptions.headers.addAll(_headers);
     final _options = newOptions.copyWith(
       method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
       queryParameters: queryParameters,
       path: '/package_manager',
     )..data = _data;
@@ -121,7 +87,7 @@ class _Api implements Api {
     try {
       _value = AppDetail.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, _result);
       rethrow;
     }
     return _value;
@@ -149,7 +115,7 @@ class _Api implements Api {
     newOptions.headers.addAll(_headers);
     final _options = newOptions.copyWith(
       method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
       queryParameters: queryParameters,
       path: '/package_manager',
     )..data = _data;
@@ -158,7 +124,7 @@ class _Api implements Api {
     try {
       _value = AppMainActivity.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, _result);
       rethrow;
     }
     return _value;
@@ -186,7 +152,7 @@ class _Api implements Api {
     newOptions.headers.addAll(_headers);
     final _options = newOptions.copyWith(
       method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
       queryParameters: queryParameters,
       path: '/package_manager',
     )..data = _data;
@@ -195,114 +161,7 @@ class _Api implements Api {
     try {
       _value = AppActivitys.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<DefaultResult> startActivity({
-    RequestOptions? options,
-    String? key,
-    String action = 'start_activity',
-    String? package,
-    String? activity,
-    String? displayId,
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'action': action,
-      r'package': package,
-      r'activity': activity,
-      r'displayId': displayId,
-    };
-    queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'key': key};
-    _headers.removeWhere((k, v) => v == null);
-    const Map<String, dynamic>? _data = null;
-    final newOptions = newRequestOptions(options);
-    newOptions.extra.addAll(_extra);
-    newOptions.headers.addAll(_dio.options.headers);
-    newOptions.headers.addAll(_headers);
-    final _options = newOptions.copyWith(
-      method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
-      queryParameters: queryParameters,
-      path: '/activity_manager',
-    )..data = _data;
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late DefaultResult _value;
-    try {
-      _value = DefaultResult.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<Tasks> getTasks({
-    RequestOptions? options,
-    String? key,
-    String action = 'get_tasks',
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'action': action};
-    queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'key': key};
-    _headers.removeWhere((k, v) => v == null);
-    const Map<String, dynamic>? _data = null;
-    final newOptions = newRequestOptions(options);
-    newOptions.extra.addAll(_extra);
-    newOptions.headers.addAll(_dio.options.headers);
-    newOptions.headers.addAll(_headers);
-    final _options = newOptions.copyWith(
-      method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
-      queryParameters: queryParameters,
-      path: '/activity_task_manager',
-    )..data = _data;
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Tasks _value;
-    try {
-      _value = Tasks.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<AndroidProcesses> getAndroidProcess({
-    RequestOptions? options,
-    String? key,
-    String action = 'get_running_apps',
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'action': action};
-    queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{r'key': key};
-    _headers.removeWhere((k, v) => v == null);
-    const Map<String, dynamic>? _data = null;
-    final newOptions = newRequestOptions(options);
-    newOptions.extra.addAll(_extra);
-    newOptions.headers.addAll(_dio.options.headers);
-    newOptions.headers.addAll(_headers);
-    final _options = newOptions.copyWith(
-      method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
-      queryParameters: queryParameters,
-      path: '/activity_task_manager',
-    )..data = _data;
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late AndroidProcesses _value;
-    try {
-      _value = AndroidProcesses.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, _result);
       rethrow;
     }
     return _value;
@@ -330,7 +189,7 @@ class _Api implements Api {
     newOptions.headers.addAll(_headers);
     final _options = newOptions.copyWith(
       method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
       queryParameters: queryParameters,
       path: '/package_manager',
     )..data = _data;
@@ -339,7 +198,7 @@ class _Api implements Api {
     try {
       _value = AppPermissions.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, _result);
       rethrow;
     }
     return _value;
@@ -353,10 +212,7 @@ class _Api implements Api {
     String? cmd,
   }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'action': action,
-      r'cmd': cmd,
-    };
+    final queryParameters = <String, dynamic>{r'action': action, r'cmd': cmd};
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{r'key': key};
     _headers.removeWhere((k, v) => v == null);
@@ -367,7 +223,7 @@ class _Api implements Api {
     newOptions.headers.addAll(_headers);
     final _options = newOptions.copyWith(
       method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
       queryParameters: queryParameters,
       path: '/package_manager',
     )..data = _data;
@@ -376,7 +232,7 @@ class _Api implements Api {
     try {
       _value = PMResult.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, _result);
       rethrow;
     }
     return _value;
@@ -406,7 +262,7 @@ class _Api implements Api {
     newOptions.headers.addAll(_headers);
     final _options = newOptions.copyWith(
       method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
       queryParameters: queryParameters,
       path: '/package_manager',
     )..data = _data;
@@ -415,7 +271,50 @@ class _Api implements Api {
     try {
       _value = AppFlags.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<DefaultResult> startActivity({
+    RequestOptions? options,
+    String? key,
+    String action = 'start_activity',
+    String? package,
+    String? activity,
+    String? displayId,
+    int? userId,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'action': action,
+      r'package': package,
+      r'activity': activity,
+      r'displayId': displayId,
+      r'userId': userId,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'key': key};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _options = newOptions.copyWith(
+      method: 'GET',
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+      queryParameters: queryParameters,
+      path: '/activity_manager',
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late DefaultResult _value;
+    try {
+      _value = DefaultResult.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, _result);
       rethrow;
     }
     return _value;
@@ -443,7 +342,7 @@ class _Api implements Api {
     newOptions.headers.addAll(_headers);
     final _options = newOptions.copyWith(
       method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
       queryParameters: queryParameters,
       path: '/activity_manager',
     )..data = _data;
@@ -452,7 +351,141 @@ class _Api implements Api {
     try {
       _value = _result.data!;
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<Tasks> getTasks({
+    RequestOptions? options,
+    String? key,
+    String action = 'get_tasks',
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'action': action};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'key': key};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _options = newOptions.copyWith(
+      method: 'GET',
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+      queryParameters: queryParameters,
+      path: '/activity_task_manager',
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late Tasks _value;
+    try {
+      _value = Tasks.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<AndroidProcesses> getAndroidProcess({
+    RequestOptions? options,
+    String? key,
+    String action = 'get_running_apps',
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'action': action};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'key': key};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _options = newOptions.copyWith(
+      method: 'GET',
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+      queryParameters: queryParameters,
+      path: '/activity_task_manager',
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late AndroidProcesses _value;
+    try {
+      _value = AndroidProcesses.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<DefaultResult> setFocusedTask({
+    RequestOptions? options,
+    String? key,
+    String action = 'set_focused_task',
+    required int id,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'action': action, r'id': id};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'key': key};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _options = newOptions.copyWith(
+      method: 'GET',
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+      queryParameters: queryParameters,
+      path: '/activity_task_manager',
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late DefaultResult _value;
+    try {
+      _value = DefaultResult.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<DefaultResult> removeTask({
+    RequestOptions? options,
+    required int id,
+    required String key,
+    String action = "remove_task",
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'id': id, r'action': action};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'key': key};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _options = newOptions.copyWith(
+      method: 'GET',
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+      queryParameters: queryParameters,
+      path: '/activity_manager',
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late DefaultResult _value;
+    try {
+      _value = DefaultResult.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, _result);
       rethrow;
     }
     return _value;
@@ -476,7 +509,7 @@ class _Api implements Api {
     newOptions.headers.addAll(_headers);
     final _options = newOptions.copyWith(
       method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
       queryParameters: queryParameters,
       path: '/display_manager',
     )..data = _data;
@@ -485,7 +518,7 @@ class _Api implements Api {
     try {
       _value = Displays.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, _result);
       rethrow;
     }
     return _value;
@@ -499,6 +532,7 @@ class _Api implements Api {
     required String height,
     required String density,
     bool? useDeviceConfig,
+    String? displayName,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{
@@ -506,6 +540,7 @@ class _Api implements Api {
       r'height': height,
       r'density': density,
       r'useDeviceConfig': useDeviceConfig,
+      r'displayName': displayName,
     };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{r'key': key};
@@ -517,7 +552,7 @@ class _Api implements Api {
     newOptions.headers.addAll(_headers);
     final _options = newOptions.copyWith(
       method: 'POST',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
       queryParameters: queryParameters,
       path: '/display_manager?action=createVirtualDisplay',
     )..data = _data;
@@ -526,7 +561,7 @@ class _Api implements Api {
     try {
       _value = Display.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, _result);
       rethrow;
     }
     return _value;
@@ -550,7 +585,7 @@ class _Api implements Api {
     newOptions.headers.addAll(_headers);
     final _options = newOptions.copyWith(
       method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
       queryParameters: queryParameters,
       path: '/device_info',
     )..data = _data;
@@ -559,7 +594,7 @@ class _Api implements Api {
     try {
       _value = CPUGPUInfo.fromJson(_result.data!);
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, _result);
       rethrow;
     }
     return _value;
@@ -583,7 +618,7 @@ class _Api implements Api {
     newOptions.headers.addAll(_headers);
     final _options = newOptions.copyWith(
       method: 'GET',
-      baseUrl: baseUrl ?? _dio.options.baseUrl,
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
       queryParameters: queryParameters,
       path: '/device_info',
     )..data = _data;
@@ -592,7 +627,79 @@ class _Api implements Api {
     try {
       _value = _result.data!;
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<InputDevices> getInputDevices({
+    RequestOptions? options,
+    String? key,
+    String action = "get_input_devices",
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'action': action};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'key': key};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _options = newOptions.copyWith(
+      method: 'GET',
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+      queryParameters: queryParameters,
+      path: '/input_manager',
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late InputDevices _value;
+    try {
+      _value = InputDevices.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<DefaultResult> bindDeviceToDisplay({
+    RequestOptions? options,
+    String? key,
+    String action = "bind_device_to_display",
+    required String descriptor,
+    required String display,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'action': action,
+      r'descriptor': descriptor,
+      r'display': display,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{r'key': key};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final newOptions = newRequestOptions(options);
+    newOptions.extra.addAll(_extra);
+    newOptions.headers.addAll(_dio.options.headers);
+    newOptions.headers.addAll(_headers);
+    final _options = newOptions.copyWith(
+      method: 'GET',
+      baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+      queryParameters: queryParameters,
+      path: '/input_manager',
+    )..data = _data;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late DefaultResult _value;
+    try {
+      _value = DefaultResult.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, _result);
       rethrow;
     }
     return _value;
@@ -600,7 +707,7 @@ class _Api implements Api {
 
   RequestOptions newRequestOptions(Object? options) {
     if (options is RequestOptions) {
-      return options as RequestOptions;
+      return options;
     }
     if (options is Options) {
       return RequestOptions(
@@ -636,10 +743,7 @@ class _Api implements Api {
     return requestOptions;
   }
 
-  String _combineBaseUrls(
-    String dioBaseUrl,
-    String? baseUrl,
-  ) {
+  String _combineBaseUrls(String dioBaseUrl, String? baseUrl) {
     if (baseUrl == null || baseUrl.trim().isEmpty) {
       return dioBaseUrl;
     }
@@ -653,3 +757,5 @@ class _Api implements Api {
     return Uri.parse(dioBaseUrl).resolveUri(url).toString();
   }
 }
+
+// dart format on

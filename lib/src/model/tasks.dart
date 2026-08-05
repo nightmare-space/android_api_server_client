@@ -26,16 +26,22 @@ Task deserializeApp(Map<String, dynamic> json) => Task.fromJson(json);
 @JsonSerializable()
 class Task {
   Task({
+    required this.id,
+    required this.taskId,
+    required this.stackId,
+    required this.affiliatedTaskId,
     required this.persistentId,
     required this.topPackage,
     required this.topActivity,
     required this.label,
-    required this.id,
     this.displayId,
   });
 
   final int id;
+  final int? taskId;
+  final int? stackId;
   final int persistentId;
+  final int affiliatedTaskId;
   final int? displayId;
   final String topPackage;
   final String topActivity;

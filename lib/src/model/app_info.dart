@@ -31,6 +31,7 @@ class AppInfo {
     this.sourceDir = '',
     this.isSuspended = false,
     this.isInstalled = true,
+    this.userId = 0,
   });
   String package;
   String label;
@@ -42,6 +43,7 @@ class AppInfo {
   bool enabled;
   bool hide;
   int uid;
+  int userId;
   String sourceDir;
   @JsonKey(name: 'is_suspend')
   bool isSuspended;

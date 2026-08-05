@@ -17,17 +17,23 @@ Map<String, dynamic> _$TasksToJson(Tasks instance) => <String, dynamic>{
     };
 
 Task _$TaskFromJson(Map<String, dynamic> json) => Task(
+      id: (json['id'] as num).toInt(),
+      taskId: (json['taskId'] as num?)?.toInt(),
+      stackId: (json['stackId'] as num?)?.toInt(),
+      affiliatedTaskId: (json['affiliatedTaskId'] as num).toInt(),
       persistentId: (json['persistentId'] as num).toInt(),
       topPackage: json['topPackage'] as String,
       topActivity: json['topActivity'] as String,
       label: json['label'] as String,
-      id: (json['id'] as num).toInt(),
       displayId: (json['displayId'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
       'id': instance.id,
+      'taskId': instance.taskId,
+      'stackId': instance.stackId,
       'persistentId': instance.persistentId,
+      'affiliatedTaskId': instance.affiliatedTaskId,
       'displayId': instance.displayId,
       'topPackage': instance.topPackage,
       'topActivity': instance.topActivity,
