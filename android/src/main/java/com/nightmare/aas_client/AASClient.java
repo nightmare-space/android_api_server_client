@@ -24,7 +24,6 @@ public class AASClient implements FlutterPlugin, MethodCallHandler {
     static List<FlutterEngine> flutterEngines = new ArrayList<>();
 
     public static void addFlutterEngine(FlutterEngine flutterEngine) {
-        Log.d(TAG, "addFlutterEngine -> " + flutterEngine);
         flutterEngines.add(flutterEngine);
     }
 

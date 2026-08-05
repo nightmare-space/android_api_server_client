@@ -1,4 +1,4 @@
-group = 'com.nightmare.app_channel'
+group = 'com.nightmare.aas'
 version = '1.0'
 
 buildscript {
@@ -24,7 +24,7 @@ apply plugin: 'com.android.library'
 
 android {
     if (project.android.hasProperty('namespace')) {
-        namespace = 'com.nightmare.app_channel'
+        namespace = 'com.nightmare.aas_client'
     }
 
     compileSdk = 34
